@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mobile Codex Dev"
+  short_description: "Engineer from mobile with proof"
+  default_prompt: "Use $mobile-codex-dev to engineer this from mobile with runnable proof, concise logs, screenshots, and an ngrok preview when relevant."
