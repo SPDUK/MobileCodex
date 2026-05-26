@@ -1,0 +1,63 @@
+# Local Codex state and installed skill copies
+.codex/
+
+# Python runtime artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyre/
+.coverage
+coverage.xml
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Node and frontend build artifacts
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun.lockb
+dist/
+build/
+.next/
+.nuxt/
+.svelte-kit/
+.astro/
+storybook-static/
+
+# Logs, proof captures, and local preview outputs
+*.log
+logs/
+tmp/
+temp/
+.tmp/
+screenshots/
+proof/
+artifacts/
+playwright-report/
+test-results/
+
+# Local secrets and machine-specific config
+.env
+.env.*
+!.env.example
+ngrok.yml
+ngrok.yaml
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
