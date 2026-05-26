@@ -25,9 +25,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-bun.lockb
-dist/
-build/
+/dist/
+/build/
 .next/
 .nuxt/
 .svelte-kit/
@@ -40,9 +39,9 @@ logs/
 tmp/
 temp/
 .tmp/
-screenshots/
-proof/
-artifacts/
+/screenshots/
+/proof/
+/artifacts/
 playwright-report/
 test-results/
 

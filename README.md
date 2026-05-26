@@ -1,351 +1,201 @@
 # Mobile Codex Dev
 
-Mobile Codex Dev is a Codex skill for building software when the user is working from a phone, away from their PC, or relying on Codex to be their eyes on the local machine.
+**A Codex skill for shipping real software work from your phone.**
 
-It makes Codex prioritize runnable proof, mobile-friendly previews, concise logs, screenshots, and self-contained handoffs across web apps, APIs, CLIs, scripts, tests, builds, and generated artifacts.
+Mobile Codex Dev teaches Codex to behave like a capable remote pair when you are away from your desk: inspect the repo, run the right commands, verify the result, capture proof, and hand back the useful bits in a phone-readable format.
 
-## What This Adds
+No "check your terminal." No mystery localhost. No giant log dumps. Just the change, the preview, the proof, and the next useful move.
 
-Most coding agents assume the user can inspect the desktop, terminal, browser, and filesystem. This skill flips that default:
+## Step 1: Use Codex From Anywhere
 
-- Codex should run safe commands itself instead of asking the user to run them.
-- Codex should summarize terminal output in chat instead of saying "check the logs."
-- Codex should provide `ngrok` phone previews for web work when safe and available.
-- Codex should capture mobile screenshots or visual proof for UI work.
-- Codex should include exact blockers when mobile preview is not possible.
-- Codex should keep replies compact enough to use on the go.
+Mobile Codex Dev is built as the practical partner workflow for [Work with Codex from anywhere](https://openai.com/index/work-with-codex-from-anywhere/). Codex mobile gives you access to the live development environment from your phone; this skill makes that environment behave correctly for away-from-laptop work.
 
-## Feature Overview
+Use it when your phone is the control surface and Codex needs to:
 
-| Area | Behavior |
-| --- | --- |
-| Mobile-first work style | Treat short mobile prompts as enough to begin when risk is low. |
-| Web previews | Start/reuse local dev servers, verify locally, then expose with `ngrok http <port>` only. |
-| Visual proof | Prefer mobile viewport screenshots and console summaries for UI changes. |
-| CLI/script proof | Run safe commands, capture exit codes, summarize stdout/stderr, and report generated paths. |
-| Stack playbooks | Covers frontend web, backend APIs, Rust, Node/TypeScript, Python, Go, native/mobile apps, and docs. |
-| Handoff format | Final replies include result, preview, proof, and next options. |
-| Helper tooling | `scripts/mobile_dev.py` detects project shape, checks ngrok, and formats handoffs. |
+- inspect the repo before asking questions
+- run safe commands and summarize the output
+- start local servers and report their status
+- create an ngrok phone preview when safe
+- capture browser proof and screenshots
+- return a compact mobile handoff
 
-## What The Reference Repo Has That We Still Do Not
+## Why It Feels Different
 
-The example project, [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), is a larger packaged ecosystem. It includes several things this project does not currently replicate:
+Most coding workflows assume you can see the desktop, browser, terminal, and file tree. Mobile Codex Dev flips that assumption.
 
-| Reference repo capability | Current Mobile Codex Dev status |
-| --- | --- |
-| Large root `README.md` with install, usage, examples, and advanced commands | Added here. |
-| Root package metadata such as `skill.json` | Not yet added; Codex uses `agents/openai.yaml` inside the skill. |
-| Dedicated CLI package with install/update/uninstall commands | Not yet added; current helper script is local and lightweight. |
-| Large searchable data tables | Not needed yet; current references are curated playbooks. |
-| Preview demo artifacts and screenshots | Not yet added; future versions can include example mobile proof reports. |
-| GitHub workflows and release packaging | Not yet added. |
-| Multiple platform templates | Not needed yet; this skill is Codex-first. |
-| Extra docs folder | Not needed yet; reference docs live inside the skill. |
+Codex should do the local work itself, then bring the important evidence back to you:
 
-The immediate priority is a Codex-native skill that works well from mobile. Packaging, screenshots, and a full installer can be added once the workflow stabilizes.
+- runnable commands and exit codes
+- concise stdout/stderr summaries
+- browser screenshots for visual changes
+- local server status and ports
+- `ngrok` phone previews with real URL extraction when safe
+- exact blockers when previewing is not possible
+- final handoffs that are short enough to read on the go
 
-## Project Structure
+## The Standard
+
+Every meaningful handoff should answer four things:
 
 ```text
-MobileCodex/
-├── README.md
-└── skills/
-    └── mobile-codex-dev/
-        ├── SKILL.md
-        ├── agents/
-        │   └── openai.yaml
-        ├── references/
-        │   ├── command-proof.md
-        │   ├── mobile-handoff.md
-        │   ├── stack-playbooks.md
-        │   ├── verification-checklists.md
-        │   └── web-previews.md
-        └── scripts/
-            └── mobile_dev.py
+Result: what changed, ran, or was created
+Preview: what you can open or inspect from your phone
+Proof: commands, screenshots, logs, exit codes, or artifact paths
+Next: the 1-3 most useful follow-up options
 ```
 
-The installed auto-discovered copy also lives at:
+That simple contract is the product. It keeps Codex accountable, keeps you unblocked, and makes remote development feel deliberate instead of blurry.
 
-```text
-C:\Users\slush\.codex\skills\mobile-codex-dev
-```
+## Install
 
-## Installation
-
-### Project Copy
-
-The source copy is kept in this repo:
-
-```text
-C:\Users\slush\Projects\MobileCodex\skills\mobile-codex-dev
-```
-
-### Codex Auto-Discovery
-
-Codex discovers user skills from:
-
-```text
-C:\Users\slush\.codex\skills
-```
-
-To sync the project copy into the installed location on Windows PowerShell:
+Copy the skill folder into your Codex skills directory. Current Codex docs describe local user skills under `~/.agents/skills`; older/local setups may also use `~/.codex/skills`.
 
 ```powershell
-Copy-Item -Path C:\Users\slush\Projects\MobileCodex\skills\mobile-codex-dev\* `
-  -Destination C:\Users\slush\.codex\skills\mobile-codex-dev `
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.agents\skills" | Out-Null
+Copy-Item -Path .\skills\mobile-codex-dev `
+  -Destination "$env:USERPROFILE\.agents\skills" `
   -Recurse -Force
 ```
 
-## Prerequisites
+On macOS or Linux:
 
-### Python
-
-The helper script uses Python. On this machine, `py` is preferred because `python` may point to the Windows Store shim.
-
-```powershell
-py --version
+```bash
+mkdir -p ~/.agents/skills
+cp -R ./skills/mobile-codex-dev ~/.agents/skills/
 ```
 
-### Ngrok
-
-Public phone previews use `ngrok` only.
-
-```powershell
-ngrok version
-ngrok config add-authtoken <token>
-```
-
-If `ngrok` is missing or unauthenticated, the skill should stop the public preview workflow and report the exact blocker. It should not fall back to Cloudflare Tunnel, localtunnel, VS Code port forwarding, or router changes.
-
-## Usage
-
-### Skill Mode
-
-Invoke the skill directly:
+Then start a fresh Codex session or invoke it explicitly:
 
 ```text
 Use $mobile-codex-dev to build this feature and show me proof I can inspect from my phone.
 ```
 
-It should also trigger naturally when the user says things like:
+## Try It
 
-- "I'm on mobile."
-- "Show me this on my phone."
-- "Use ngrok."
-- "Run it and paste the output here."
-- "I can't access my PC right now."
-- "Make the smallest safe decision and show proof."
-
-### Example Prompts
+These prompts are the sweet spot:
 
 ```text
-Use $mobile-codex-dev to build the landing page and give me a phone preview.
+Use $mobile-codex-dev to build the UI, run it, and give me a phone preview.
 ```
 
 ```text
-Use $mobile-codex-dev to finish this Rust CLI and run a realistic sample command.
+Use $mobile-codex-dev to fix the failing tests and summarize the important output.
 ```
 
 ```text
-Use $mobile-codex-dev to fix the failing tests and summarize the important logs.
+Use $mobile-codex-dev to inspect this repo, choose the safest next step, and show proof.
 ```
 
 ```text
-Use $mobile-codex-dev to inspect this repo, decide what stack it is, and give me the next mobile-friendly proof step.
+Use $mobile-codex-dev to finish this CLI and run a realistic sample command.
 ```
 
-## How It Works
+## What It Covers
 
-The main `SKILL.md` stays short so it can load quickly. It points Codex to focused reference files when more detail is needed.
-
-| File | Purpose |
+| Workflow | What Codex is guided to do |
 | --- | --- |
-| `SKILL.md` | Triggering, core behavior, and non-negotiables. |
-| `references/web-previews.md` | Local servers, ngrok-only previews, mobile screenshots, and safety gates. |
-| `references/command-proof.md` | Running scripts, CLIs, tests, builds, and summarizing output. |
-| `references/stack-playbooks.md` | Stack-specific defaults for web, APIs, Rust, Node, Python, Go, and mobile apps. |
-| `references/mobile-handoff.md` | Mobile-friendly progress updates and final response shape. |
-| `references/verification-checklists.md` | Proof checklist for UI, CLI, backend, and delivery. |
-| `scripts/mobile_dev.py` | Project detection, ngrok checks, and handoff formatting. |
+| Frontend apps | Start or reuse the dev server, verify in browser, capture mobile screenshots, summarize console/network issues, and keep preview servers running when useful. |
+| Backend APIs | Run tests or a local service, exercise representative endpoints, report status codes and key responses. |
+| CLIs and scripts | Run safe sample commands, include exit codes, summarize decisive stdout/stderr, report generated files. |
+| Rust, Go, Python, Node | Prefer local project scripts and standard verification commands for each stack. |
+| Mobile handoffs | Keep progress updates and final replies concise, evidence-backed, and useful from a phone. |
+| Public previews | Use `ngrok http <port>` only, after local verification and safety checks, with helper-based URL extraction. |
 
-## Helper Commands
+## Public Preview Policy
 
-Run these from the skill folder or reference the script by absolute path.
+Mobile Codex Dev intentionally uses one tunnel provider: `ngrok`.
 
-### Detect Project Shape
+That keeps preview behavior predictable. It also prevents Codex from reaching for random tunnel services, deployment shortcuts, router changes, or editor-specific port forwarding.
 
-```powershell
-py C:\Users\slush\Projects\MobileCodex\skills\mobile-codex-dev\scripts\mobile_dev.py detect --root . --format markdown
-```
+If `ngrok` is missing, unauthenticated, rate limited, or unsafe for the current app, Codex should say exactly what blocked it and still provide local proof where possible.
 
-Example output includes detected stack signals, package manager, candidate commands, candidate ports, and suggested reference files.
-
-### Check Ngrok
+For public previews, the helper command starts ngrok, polls the local ngrok API, extracts the real forwarding URL for the requested port, reports the process/log status, and leaves the tunnel running when successful:
 
 ```powershell
-py C:\Users\slush\Projects\MobileCodex\skills\mobile-codex-dev\scripts\mobile_dev.py ngrok-check
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py ngrok-preview --port 5173
 ```
 
-Expected blocked output when ngrok is missing:
+## Repository
 
 ```text
-# Ngrok Check
-- Available: False
-- Message: ngrok is not installed or not on PATH
-- Next: Install ngrok, then run `ngrok config add-authtoken <token>`.
+MobileCodex/
+|-- README.md
+|-- index.html
+|-- .gitignore
+`-- skills/
+    `-- mobile-codex-dev/
+        |-- SKILL.md
+        |-- agents/
+        |   `-- openai.yaml
+        |-- references/
+        |   |-- command-proof.md
+        |   |-- mobile-handoff.md
+        |   |-- stack-playbooks.md
+        |   |-- verification-checklists.md
+        |   `-- web-previews.md
+        `-- scripts/
+            `-- mobile_dev.py
 ```
 
-### Format A Mobile Handoff
+The root `index.html` is a single-file demo page for the skill. The skill itself lives entirely under `skills/mobile-codex-dev`, with `SKILL.md` at that folder root.
+
+## Helper CLI
+
+The bundled helper is intentionally small. It gives Codex quick, repeatable checks without replacing normal engineering judgment.
+
+Detect project shape:
 
 ```powershell
-py C:\Users\slush\Projects\MobileCodex\skills\mobile-codex-dev\scripts\mobile_dev.py handoff `
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py detect --root . --format markdown
+```
+
+Check `ngrok` availability:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py ngrok-check
+```
+
+Start an ngrok phone preview and extract the real forwarding URL:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py ngrok-preview --port 5173
+```
+
+Format a compact handoff:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py handoff `
   --result "Updated the CLI parser" `
   --preview "CLI output summarized below" `
-  --proof "cargo test exited 0" `
+  --proof "tests exited 0" `
   --next "Add JSON output"
 ```
 
-## Supported Workflows
+## Validate
 
-### Frontend Web
-
-Codex should:
-
-1. Inspect project scripts and framework config.
-2. Start or reuse the dev server.
-3. Verify locally with browser/proof tooling.
-4. Use `ngrok http <port>` only when safe.
-5. Capture mobile screenshots when possible.
-6. Finalize with URL, screenshot path, build/test output, and console summary.
-
-### Backend APIs
-
-Codex should:
-
-1. Run tests or start the local service.
-2. Exercise a representative endpoint.
-3. Report status code, response excerpt, and relevant logs.
-4. Avoid public tunneling for private or destructive endpoints without asking.
-
-### Rust CLI
-
-Codex should:
-
-1. Run `cargo test` when tests exist.
-2. Run a safe sample CLI command.
-3. Include stdout/stderr excerpts and exit codes.
-4. Report generated file paths or binary output clearly.
-
-### Node And TypeScript CLI
-
-Codex should:
-
-1. Infer the package manager from lockfiles.
-2. Run build/test/typecheck scripts when available.
-3. Run `--help` or a safe sample command.
-4. Summarize output in chat.
-
-### Python Scripts
-
-Codex should:
-
-1. Prefer `py -m ...` on Windows when appropriate.
-2. Run tests or safe script samples.
-3. Include generated artifact paths and meaningful output.
-
-### Go CLI Or Service
-
-Codex should:
-
-1. Run `go test ./...`.
-2. Run `go run .` or the relevant command under `cmd/`.
-3. Include command output and exit code.
-
-## Mobile Proof Standard
-
-Every meaningful final reply should answer these four questions:
-
-```text
-Result: What changed, ran, or was created?
-Preview: What can I open or inspect from my phone?
-Proof: What command, screenshot, log, exit code, or artifact proves it?
-Next: What are the 1-3 useful follow-up options?
-```
-
-For tiny tasks, this can be compressed into one paragraph. The important rule is that the user should not need local desktop access to understand the outcome.
-
-## Safety Rules
-
-Ask before:
-
-- opening a public tunnel to private data, admin screens, destructive flows, or local secrets
-- running destructive commands
-- touching production systems, billing, email, cloud resources, or external services
-- transmitting sensitive data
-
-Do not ask just because the prompt is short. Make low-risk local decisions and state the assumption in the handoff.
-
-## Validation
-
-Validate the skill with:
+Run the Codex skill validator:
 
 ```powershell
-py C:\Users\slush\.codex\skills\.system\skill-creator\scripts\quick_validate.py C:\Users\slush\Projects\MobileCodex\skills\mobile-codex-dev
+$validator = "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py"
+if (Test-Path $validator) {
+  py $validator .\skills\mobile-codex-dev
+}
 ```
 
-Compile-check the helper script with:
+Compile-check the helper:
 
 ```powershell
-py -m py_compile C:\Users\slush\Projects\MobileCodex\skills\mobile-codex-dev\scripts\mobile_dev.py
+py -m py_compile .\skills\mobile-codex-dev\scripts\mobile_dev.py
 ```
 
-## Troubleshooting
+## Design Notes
 
-### Codex Does Not Pick Up The Skill
+This skill is intentionally lean:
 
-Make sure the installed copy exists:
-
-```text
-C:\Users\slush\.codex\skills\mobile-codex-dev\SKILL.md
-```
-
-Then start a fresh Codex session or explicitly invoke:
-
-```text
-Use $mobile-codex-dev ...
-```
-
-### Ngrok Preview Is Blocked
-
-Run:
-
-```powershell
-ngrok version
-```
-
-If that fails, install ngrok and authenticate:
-
-```powershell
-ngrok config add-authtoken <token>
-```
-
-The skill should still provide local proof even when public phone preview is blocked.
-
-### Python Command Hangs Or Opens The Store
-
-Use `py` instead of `python` on Windows:
-
-```powershell
-py C:\Users\slush\Projects\MobileCodex\skills\mobile-codex-dev\scripts\mobile_dev.py detect --root .
-```
-
-## Roadmap
-
-- Add root `skill.json` package metadata if this becomes a distributable skill repo.
-- Add a small installer/sync CLI for project-to-user skill syncing.
-- Add example proof reports and screenshots.
-- Add more stack-specific reference files if repeated mobile workflows need deeper playbooks.
-- Add automated validation for reference links and helper command examples.
+- `SKILL.md` holds the core behavior and routing.
+- `references/` holds deeper playbooks that Codex loads only when needed.
+- `scripts/mobile_dev.py` handles repeatable inspection and handoff formatting.
+- local Codex installs, caches, screenshots, logs, and secrets stay out of git.
 
 ## License
 

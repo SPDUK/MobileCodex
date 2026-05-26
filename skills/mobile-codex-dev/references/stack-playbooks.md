@@ -17,14 +17,17 @@ Signals:
 Default proof:
 - install status if dependencies are missing
 - typecheck, lint, or build command from project scripts
+- local server running status and URL
 - local server screenshot at mobile width
 - console error summary
-- ngrok URL when phone preview is requested and safe
+- ngrok URL when the user needs phone access and the safety gate passes
 
 Common commands:
 - `npm run dev`, `pnpm dev`, `yarn dev`, or project equivalent
 - `npm run build`
 - `npm test` or project equivalent
+
+For static HTML, serve the directory with `python -m http.server <port>` or the platform-appropriate Python launcher, then verify in a browser instead of asking the user to open the file.
 
 ## Backend Web And APIs
 
@@ -35,7 +38,7 @@ Default proof:
 - local server starts or tests pass
 - health endpoint or representative request output
 - API response excerpt, status code, and route tested
-- ngrok only if the user needs phone access to a browser UI or API endpoint
+- ngrok only if the user needs phone access to a browser UI or API endpoint and the safety gate passes
 
 Do not expose private local APIs through ngrok without checking for sensitive data or write actions.
 
@@ -93,7 +96,7 @@ Signals:
 
 Default proof:
 - static checks or tests available in scripts
-- screenshots or simulator/browser previews when available
+- screenshots or simulator/browser previews when available, launched by Codex when safe
 - mobile viewport web preview if the app has a web build
 
 Do not claim device verification unless an actual simulator, emulator, web build, or screenshot proof was used.

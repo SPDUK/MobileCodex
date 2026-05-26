@@ -1,20 +1,27 @@
 # Web Previews
 
-Use this when a project has a browser UI, static page, local dev server, Storybook, docs site, API docs UI, or any output the user should open on a phone.
+Use this when a project has a browser UI, static page, local dev server, Storybook, docs site, API docs UI, or any output the user should open on a phone. Assume Codex owns the full preview loop because the user cannot reach the laptop.
 
 ## Workflow
 
-1. Discover the server command and candidate port from package scripts, config files, framework defaults, or running process logs.
-2. Start or reuse the local server. Capture command, port, PID or process note, and the first useful ready/error lines.
-3. Verify locally before exposing it. Use Codex browser/proof tooling when available.
-4. Start `ngrok http <port>` only after the local server responds.
-5. Extract the actual `https://...ngrok-free.app` forwarding URL from ngrok output or the ngrok local API. Never invent it.
-6. Capture at least one mobile-sized screenshot when visual output matters.
-7. Finish with the mobile handoff from `mobile-handoff.md`.
+1. Discover the server command and candidate port from package scripts, config files, framework defaults, static files, or running process logs.
+2. Install dependencies if the project clearly needs them and the install is local, safe, and expected for the stack.
+3. Start or reuse the local server. Capture command, port, PID or process note, and the first useful ready/error lines.
+4. Verify locally before exposing it. Use Codex browser/proof tooling when available.
+5. Start the tunnel with `scripts/mobile_dev.py ngrok-preview --port <port>` when the user needs phone access and the safety gate passes. Do this only after the local server responds.
+6. Use the extracted `https://...` forwarding URL from the helper output. Never invent a URL or copy a stale URL.
+7. Capture at least one mobile-sized screenshot when visual output matters.
+8. Finish with the mobile handoff from `mobile-handoff.md`.
 
 ## Ngrok Only Policy
 
-Use `ngrok http <port>` as the only public tunnel provider.
+Use `ngrok http <port>` as the only public tunnel provider. Prefer the helper wrapper:
+
+```bash
+python scripts/mobile_dev.py ngrok-preview --port <port>
+```
+
+The helper starts ngrok, polls the local ngrok API, extracts the real forwarding URL for the requested port, reports the process id and log file, and leaves the tunnel running on success.
 
 Do not use:
 - Cloudflare Tunnel
@@ -28,7 +35,7 @@ If ngrok is not installed, not authenticated, rate limited, or fails:
 ```text
 Preview: blocked because ngrok is not available.
 Proof: `ngrok http <port>` failed with: <key error>.
-Next: install ngrok, then run `ngrok config add-authtoken <token>`.
+Next: ngrok must be installed and authenticated on this machine before a public phone preview can be created.
 ```
 
 Still provide local proof when available: server logs, local URL, screenshots from localhost, or test output.
@@ -40,7 +47,7 @@ Ask before opening a public tunnel when the local app shows or can mutate:
 - production data, customer data, private documents, or personal data
 - admin panels, destructive controls, billing, email sending, deploy buttons, or write-heavy automation
 
-If unsure, verify locally and ask one concise question before tunneling.
+If unsure, verify locally and ask one concise question before tunneling. Do not stop local verification while waiting for a public tunnel decision.
 
 ## Useful Port Hints
 
@@ -76,11 +83,11 @@ Verify:
 
 ## Static HTML
 
-If a file can be opened directly but the user needs phone preview, serve the directory locally instead of asking them to open the file:
+If a file can be opened directly, serve the directory locally instead of asking the user to open the file:
 
 ```bash
 python -m http.server 8000
-ngrok http 8000
+python scripts/mobile_dev.py ngrok-preview --port 8000
 ```
 
 Report both the local file path and the ngrok URL.

@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="MobileCodex is a partner Codex skill for Work with Codex from anywhere, with mobile-first handoffs, server previews, ngrok URL extraction, logs, screenshots, and proof."
+    />
+    <title>MobileCodex Developer Skill</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="preconnect" href="https://unpkg.com" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css"
+    />
+    <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/bash.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/powershell.min.js"></script>
+    <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0f14;
+        --bg-soft: #111821;
+        --panel: #151d27;
+        --panel-strong: #1b2531;
+        --line: rgba(166, 186, 209, 0.18);
+        --line-strong: rgba(166, 186, 209, 0.32);
+        --text: #edf4ff;
+        --muted: #93a4b8;
+        --faint: #67768a;
+        --accent: #55d6be;
+        --accent-strong: #8af5df;
+        --blue: #73a7ff;
+        --yellow: #ffd166;
+        --pink: #ff7ab6;
+        --green: #9be564;
+        --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+        --radius: 8px;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      [data-theme="light"] {
+        color-scheme: light;
+        --bg: #f7f9fc;
+        --bg-soft: #eef3f8;
+        --panel: #ffffff;
+        --panel-strong: #f3f6fb;
+        --line: rgba(24, 39, 58, 0.12);
+        --line-strong: rgba(24, 39, 58, 0.2);
+        --text: #17202c;
+        --muted: #536274;
+        --faint: #6d7988;
+        --accent: #047f70;
+        --accent-strong: #006b60;
+        --blue: #235ebd;
+        --yellow: #9b6700;
+        --pink: #b0286a;
+        --green: #477c10;
+        --shadow: 0 24px 70px rgba(35, 51, 74, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background:
+          radial-gradient(circle at 15% 0%, rgba(85, 214, 190, 0.16), transparent 28rem),
+          radial-gradient(circle at 92% 12%, rgba(115, 167, 255, 0.14), transparent 26rem),
+          linear-gradient(180deg, var(--bg), var(--bg-soft) 52%, var(--bg));
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid var(--line);
+        background: color-mix(in srgb, var(--bg) 86%, transparent);
+        backdrop-filter: blur(18px);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 72px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        background:
+          linear-gradient(135deg, rgba(85, 214, 190, 0.24), transparent),
+          var(--panel);
+        color: var(--accent-strong);
+      }
+
+      .brand-text {
+        display: grid;
+        gap: 1px;
+      }
+
+      .brand-text strong {
+        font-size: 0.96rem;
+        line-height: 1.1;
+      }
+
+      .brand-text span {
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .nav-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 40px;
+        padding: 0 13px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+
+      .icon-button {
+        display: inline-grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.98fr);
+        gap: 38px;
+        align-items: center;
+        padding: 74px 0 44px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 18px;
+        color: var(--accent-strong);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.82rem;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: none;
+        margin-bottom: 20px;
+        font-size: clamp(3.2rem, 7vw, 5.6rem);
+        line-height: 0.94;
+        letter-spacing: 0;
+      }
+
+      .lede {
+        max-width: 62ch;
+        color: var(--muted);
+        font-size: clamp(1rem, 1.45vw, 1.25rem);
+        line-height: 1.7;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 46px;
+        padding: 0 17px;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        background: var(--panel);
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 700;
+        box-shadow: none;
+      }
+
+      .button.primary {
+        border-color: color-mix(in srgb, var(--accent) 62%, var(--line));
+        background: var(--accent);
+        color: #06231f;
+      }
+
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 26px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 34px;
+        padding: 0 11px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--panel) 78%, transparent);
+      }
+
+      .terminal {
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        background: #0a0f16;
+        box-shadow: var(--shadow);
+      }
+
+      [data-theme="light"] .terminal {
+        background: #101722;
+      }
+
+      .terminal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        min-height: 46px;
+        padding: 0 14px;
+        border-bottom: 1px solid rgba(166, 186, 209, 0.14);
+        color: #93a4b8;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.78rem;
+      }
+
+      .journey-panel {
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        background:
+          linear-gradient(160deg, rgba(85, 214, 190, 0.12), transparent 36%),
+          var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .journey-map {
+        position: relative;
+        min-height: 190px;
+        padding: 18px;
+        border-bottom: 1px solid var(--line);
+        background:
+          linear-gradient(135deg, rgba(115, 167, 255, 0.16), transparent),
+          var(--panel-strong);
+      }
+
+      .route-line {
+        position: absolute;
+        inset: 46px 38px auto 46px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--blue), var(--pink));
+      }
+
+      .route-point {
+        position: absolute;
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--line-strong);
+        border-radius: 50%;
+        background: var(--panel);
+        color: var(--accent-strong);
+      }
+
+      .route-point.start {
+        left: 26px;
+        top: 26px;
+      }
+
+      .route-point.mid {
+        left: calc(50% - 21px);
+        top: 26px;
+      }
+
+      .route-point.end {
+        right: 24px;
+        top: 26px;
+      }
+
+      .journey-copy {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+      }
+
+      .journey-copy p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .journey-copy strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--text);
+        font-size: 1.06rem;
+      }
+
+      .proof-feed {
+        display: grid;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .proof-item {
+        display: grid;
+        grid-template-columns: 34px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        min-width: 0;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: color-mix(in srgb, var(--panel-strong) 78%, transparent);
+      }
+
+      .proof-item i {
+        color: var(--accent-strong);
+      }
+
+      .proof-item strong,
+      .proof-item span {
+        display: block;
+      }
+
+      .proof-item strong {
+        margin-bottom: 3px;
+        font-size: 0.95rem;
+      }
+
+      .proof-item span {
+        color: var(--muted);
+        font-size: 0.84rem;
+        line-height: 1.35;
+      }
+
+      .status {
+        color: var(--green);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.74rem;
+        font-weight: 800;
+      }
+
+      .traffic {
+        display: flex;
+        gap: 7px;
+      }
+
+      .traffic span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--dot);
+      }
+
+      pre {
+        margin: 0;
+        white-space: pre;
+      }
+
+      pre code.hljs {
+        min-height: 420px;
+        padding: 22px;
+        background: transparent;
+        font-size: clamp(0.72rem, 1.4vw, 0.92rem);
+        line-height: 1.7;
+      }
+
+      .section {
+        padding: 54px 0;
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 22px;
+      }
+
+      .section-heading h2 {
+        margin-bottom: 0;
+        font-size: clamp(1.65rem, 3.2vw, 2.7rem);
+        line-height: 1.05;
+      }
+
+      .section-heading p {
+        max-width: 48ch;
+        margin-bottom: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .feature {
+        min-height: 210px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: color-mix(in srgb, var(--panel) 88%, transparent);
+      }
+
+      .feature i {
+        display: inline-grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        margin-bottom: 18px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        color: var(--accent-strong);
+      }
+
+      .feature h3 {
+        margin-bottom: 10px;
+        font-size: 1rem;
+      }
+
+      .feature p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.93rem;
+        line-height: 1.6;
+      }
+
+      .install-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .steps {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        overflow: hidden;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 44px 1fr;
+        gap: 14px;
+        padding: 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .step:last-child {
+        border-bottom: 0;
+      }
+
+      .step-number {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: var(--radius);
+        background: var(--panel-strong);
+        color: var(--accent-strong);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-weight: 800;
+      }
+
+      .step h3 {
+        margin-bottom: 7px;
+        font-size: 1rem;
+      }
+
+      .step p {
+        margin-bottom: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .copy-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 14px;
+        border-top: 1px solid rgba(166, 186, 209, 0.14);
+      }
+
+      .copy-row span {
+        color: #93a4b8;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.78rem;
+      }
+
+      .command-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(166, 186, 209, 0.14);
+      }
+
+      .command-toolbar label {
+        color: #93a4b8;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.78rem;
+      }
+
+      .command-select {
+        min-height: 34px;
+        padding: 0 34px 0 10px;
+        border: 1px solid rgba(166, 186, 209, 0.26);
+        border-radius: var(--radius);
+        background: #101722;
+        color: #edf4ff;
+        font: inherit;
+        font-size: 0.85rem;
+      }
+
+      .copy {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 34px;
+        padding: 0 10px;
+        border: 1px solid rgba(166, 186, 209, 0.22);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.04);
+        color: #edf4ff;
+        cursor: pointer;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .logos {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .logo-tile {
+        display: grid;
+        place-items: center;
+        min-height: 118px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .logo-tile img {
+        width: 34px;
+        height: 34px;
+        margin-bottom: 12px;
+        filter: invert(1);
+        opacity: 0.88;
+      }
+
+      [data-theme="light"] .logo-tile img {
+        filter: none;
+      }
+
+      .logo-tile span {
+        display: block;
+        font-size: 0.86rem;
+      }
+
+      .moment-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .moment {
+        min-height: 190px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+      }
+
+      .moment i {
+        color: var(--accent-strong);
+      }
+
+      .moment h3 {
+        margin: 14px 0 9px;
+        font-size: 1rem;
+      }
+
+      .moment p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.93rem;
+        line-height: 1.6;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+      }
+
+      table {
+        width: 100%;
+        min-width: 760px;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 17px 18px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      td:first-child {
+        color: var(--text);
+        font-weight: 800;
+      }
+
+      td {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .yes {
+        color: var(--green);
+        font-weight: 800;
+      }
+
+      .partial {
+        color: var(--yellow);
+        font-weight: 800;
+      }
+
+      .doc-band {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 20px;
+        align-items: center;
+        padding: 22px;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        background:
+          linear-gradient(135deg, rgba(85, 214, 190, 0.14), rgba(115, 167, 255, 0.08)),
+          var(--panel);
+      }
+
+      .doc-band h2 {
+        margin-bottom: 8px;
+      }
+
+      .doc-band p {
+        max-width: 70ch;
+        margin-bottom: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .footer {
+        padding: 34px 0 46px;
+        color: var(--faint);
+        font-size: 0.9rem;
+      }
+
+      .footer .shell {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        border-top: 1px solid var(--line);
+        padding-top: 22px;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .install-grid,
+        .doc-band {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding-top: 54px;
+        }
+
+        .feature-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .moment-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .logos {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 680px) {
+        .shell {
+          width: min(100% - 24px, 1180px);
+        }
+
+        .brand-text span,
+        .nav-link span {
+          display: none;
+        }
+
+        .hero-actions,
+        .doc-band .button {
+          width: 100%;
+        }
+
+        .button {
+          width: 100%;
+        }
+
+        pre code.hljs {
+          min-height: 330px;
+          overflow-x: auto;
+        }
+
+        .section-heading {
+          align-items: start;
+          flex-direction: column;
+        }
+
+        .feature-grid,
+        .moment-grid,
+        .logos {
+          grid-template-columns: 1fr;
+        }
+
+        .footer .shell {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <nav class="shell nav" aria-label="Primary navigation">
+        <a class="brand" href="#">
+          <span class="brand-mark" aria-hidden="true"><i data-lucide="smartphone"></i></span>
+          <span class="brand-text">
+            <strong>MobileCodex</strong>
+            <span>mobile-first Codex skill</span>
+          </span>
+        </a>
+        <div class="nav-actions">
+          <a class="nav-link" href="https://github.com/SPDUK/MobileCodex" target="_blank" rel="noreferrer">
+            <i data-lucide="github"></i>
+            <span>GitHub</span>
+          </a>
+          <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle color theme">
+            <i data-lucide="moon"></i>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="shell hero" aria-labelledby="hero-title">
+        <div>
+          <p class="eyebrow"><i data-lucide="map"></i> On-the-go Codex workflow</p>
+          <h1 id="hero-title">MobileCodex</h1>
+          <p class="lede">
+            A partner skill for Work with Codex from anywhere. When your phone is the control surface,
+            MobileCodex pushes Codex to inspect, run, preview, capture proof, and report blockers clearly.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#install"><i data-lucide="download"></i>Install Skill</a>
+            <a class="button" href="https://github.com/SPDUK/MobileCodex#readme" target="_blank" rel="noreferrer">
+              <i data-lucide="book-open"></i>Documentation
+            </a>
+          </div>
+          <div class="hero-meta" aria-label="Project metadata">
+            <span class="pill"><i data-lucide="git-branch"></i> SPDUK/MobileCodex</span>
+            <span class="pill"><i data-lucide="route"></i> Codex from anywhere</span>
+            <span class="pill"><i data-lucide="camera"></i> phone-ready proof</span>
+          </div>
+        </div>
+
+        <aside class="journey-panel" aria-label="MobileCodex on-the-go workflow preview">
+          <div class="journey-map">
+            <div class="route-line" aria-hidden="true"></div>
+            <span class="route-point start" aria-hidden="true"><i data-lucide="coffee"></i></span>
+            <span class="route-point mid" aria-hidden="true"><i data-lucide="train-front"></i></span>
+            <span class="route-point end" aria-hidden="true"><i data-lucide="smartphone"></i></span>
+            <div class="journey-copy">
+              <strong>Codex is remote. The proof still has to be real.</strong>
+              <p>MobileCodex turns phone-led work into commands, previews, screenshots, logs, and blockers.</p>
+            </div>
+          </div>
+          <div class="proof-feed">
+            <div class="proof-item">
+              <i data-lucide="globe"></i>
+              <div>
+                <strong>ngrok URL extracted</strong>
+                <span>The helper reads the local ngrok API and reports the real phone URL.</span>
+              </div>
+              <span class="status">URL</span>
+            </div>
+            <div class="proof-item">
+              <i data-lucide="image"></i>
+              <div>
+                <strong>Browser proof captured</strong>
+                <span>Mobile screenshots and console summaries when UI exists.</span>
+              </div>
+              <span class="status">390px</span>
+            </div>
+            <div class="proof-item">
+              <i data-lucide="clipboard-check"></i>
+              <div>
+                <strong>Handoff complete</strong>
+                <span>Result, preview or blocker, proof, and next action.</span>
+              </div>
+              <span class="status">DONE</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="shell section" aria-labelledby="features-title">
+        <div class="section-heading">
+          <h2 id="features-title">Built for Codex from anywhere</h2>
+          <p>
+            Codex mobile gives you the remote control. MobileCodex adds the proof discipline.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature">
+            <i data-lucide="scan-search" aria-hidden="true"></i>
+            <h3>Repo inspection first</h3>
+            <p>Codex classifies the project and chooses relevant commands before asking avoidable questions.</p>
+          </article>
+          <article class="feature">
+            <i data-lucide="server-cog" aria-hidden="true"></i>
+            <h3>Server handling</h3>
+            <p>For web work, Codex starts or reuses local servers and reports URL, port, logs, and running status.</p>
+          </article>
+          <article class="feature">
+            <i data-lucide="link-2" aria-hidden="true"></i>
+            <h3>Real preview URLs</h3>
+            <p>The helper starts ngrok, polls the local API, extracts the forwarding URL, and reports failures cleanly.</p>
+          </article>
+          <article class="feature">
+            <i data-lucide="terminal-square" aria-hidden="true"></i>
+            <h3>Command summaries</h3>
+            <p>Tests, builds, and scripts come back with exit codes, decisive output, generated paths, and blockers.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="shell section" id="install" aria-labelledby="install-title">
+        <div class="section-heading">
+          <h2 id="install-title">Install from GitHub</h2>
+          <p>
+            Source the skill from <a href="https://github.com/SPDUK/MobileCodex" target="_blank" rel="noreferrer">SPDUK/MobileCodex</a>
+            and place it under your Codex skills directory as <code>mobile-codex-dev</code>.
+          </p>
+        </div>
+        <div class="install-grid">
+          <div class="steps">
+            <article class="step">
+              <span class="step-number">1</span>
+              <div>
+                <h3>Start with Work with Codex from anywhere</h3>
+                <p>
+                  Connect your phone with
+                  <a href="https://openai.com/index/work-with-codex-from-anywhere/" target="_blank" rel="noreferrer">Work with Codex from anywhere</a>
+                  so Codex can access your repo, commands, servers, and browser proof.
+                </p>
+              </div>
+            </article>
+            <article class="step">
+              <span class="step-number">2</span>
+              <div>
+                <h3>Install MobileCodex</h3>
+                <p>Place the skill folder under your Codex skills directory so the mobile workflow can be discovered.</p>
+              </div>
+            </article>
+            <article class="step">
+              <span class="step-number">3</span>
+              <div>
+                <h3>Ask for proof</h3>
+                <p>Use it for server previews, ngrok URL extraction, screenshots, logs, blockers, and compact handoffs.</p>
+              </div>
+            </article>
+          </div>
+
+          <aside class="terminal" aria-label="Install command">
+            <div class="terminal-head">
+              <div class="traffic" aria-hidden="true">
+                <span style="--dot: #ff5f57"></span>
+                <span style="--dot: #ffbd2e"></span>
+                <span style="--dot: #28c840"></span>
+              </div>
+              <span id="installShellLabel">install.sh</span>
+            </div>
+            <div class="command-toolbar">
+              <label for="installShell">Install script</label>
+              <select class="command-select" id="installShell" aria-label="Choose install script">
+                <option value="sh">Shell (.sh)</option>
+                <option value="powershell">PowerShell</option>
+              </select>
+            </div>
+            <pre><code class="language-bash" id="installCommand">repo="$(mktemp -d)/MobileCodex"
+git clone https://github.com/SPDUK/MobileCodex "$repo"
+mkdir -p "$HOME/.agents/skills"
+cp -R "$repo/skills/mobile-codex-dev" "$HOME/.agents/skills/"</code></pre>
+            <div class="copy-row">
+              <span>copy install command</span>
+              <button class="copy" type="button" data-copy="#installCommand">
+                <i data-lucide="copy"></i>
+                Copy
+              </button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="shell section" aria-labelledby="moments-title">
+        <div class="section-heading">
+          <h2 id="moments-title">What the skill actually adds</h2>
+          <p>It does not replace Codex. It changes Codex's defaults for away-from-laptop engineering.</p>
+        </div>
+        <div class="moment-grid">
+          <article class="moment">
+            <i data-lucide="play"></i>
+            <h3>Run safe commands</h3>
+            <p>Codex should run safe local commands itself instead of asking you to run them from a laptop.</p>
+          </article>
+          <article class="moment">
+            <i data-lucide="globe-lock"></i>
+            <h3>Create safe previews</h3>
+            <p>When web output exists, Codex should verify locally, start ngrok, extract the real URL, and report the tunnel status.</p>
+          </article>
+          <article class="moment">
+            <i data-lucide="camera"></i>
+            <h3>Capture browser proof</h3>
+            <p>Visual work should include mobile screenshots and browser evidence, not a vague "looks good."</p>
+          </article>
+          <article class="moment">
+            <i data-lucide="file-check-2"></i>
+            <h3>Return compact handoffs</h3>
+            <p>Final replies should include result, preview or blocker, proof, and the next useful move.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="shell section" aria-labelledby="compare-title">
+        <div class="section-heading">
+          <h2 id="compare-title">Workflow comparison</h2>
+          <p>How the skill changes Codex behavior when you are outdoors, commuting, traveling, or away from your PC.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Capability</th>
+                <th>Default coding assistant</th>
+                <th>MobileCodex skill</th>
+                <th>Why it matters</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Initial triage</td>
+                <td><span class="partial">Depends</span> on prompt detail.</td>
+                <td><span class="yes">Built in</span> repo inspection and stack detection.</td>
+                <td>The skill pushes Codex to inspect first and ask fewer unnecessary questions.</td>
+              </tr>
+              <tr>
+                <td>Visual proof</td>
+                <td><span class="partial">Optional</span> screenshots or browser checks.</td>
+                <td><span class="yes">Expected</span> server startup and mobile viewport verification for UI work.</td>
+                <td>The user can review output from a phone without reaching for the laptop.</td>
+              </tr>
+              <tr>
+                <td>Public previews</td>
+                <td><span class="partial">Manual</span> tunnel setup.</td>
+                <td><span class="yes">Automated</span> ngrok URL extraction.</td>
+                <td>The helper starts ngrok, reads the local API, reports the real URL, and explains blockers.</td>
+              </tr>
+              <tr>
+                <td>Final handoff</td>
+                <td><span class="partial">Variable</span> summary depth.</td>
+                <td><span class="yes">Compact</span> result, proof, blockers, and next step.</td>
+                <td>The skill makes completion auditable from chat without local desktop access.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="shell section" aria-labelledby="docs-title">
+        <div class="doc-band">
+          <div>
+            <h2 id="docs-title">Read the docs and source</h2>
+            <p>
+              The canonical project home is the GitHub repository. Use the README for setup notes, contribution flow,
+              and the latest published skill contents as the repository fills out.
+            </p>
+          </div>
+          <a class="button primary" href="https://github.com/SPDUK/MobileCodex" target="_blank" rel="noreferrer">
+            <i data-lucide="external-link"></i>Open Repository
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell">
+        <span>MobileCodex developer skill demo</span>
+        <span>Source: github.com/SPDUK/MobileCodex</span>
+      </div>
+    </footer>
+
+    <script>
+      const root = document.documentElement;
+      const themeToggle = document.querySelector("#themeToggle");
+      const installShell = document.querySelector("#installShell");
+      const installShellLabel = document.querySelector("#installShellLabel");
+      const installCommand = document.querySelector("#installCommand");
+      const savedTheme = localStorage.getItem("mobilecodex-theme");
+      const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+      const installScripts = {
+        sh: {
+          label: "install.sh",
+          language: "language-bash",
+          code: `repo="$(mktemp -d)/MobileCodex"
+git clone https://github.com/SPDUK/MobileCodex "$repo"
+mkdir -p "$HOME/.agents/skills"
+cp -R "$repo/skills/mobile-codex-dev" "$HOME/.agents/skills/"`,
+        },
+        powershell: {
+          label: "install.ps1",
+          language: "language-powershell",
+          code: `$repo = Join-Path $env:TEMP "MobileCodex-skill"
+if (Test-Path $repo) { Remove-Item $repo -Recurse -Force }
+git clone https://github.com/SPDUK/MobileCodex $repo
+New-Item -ItemType Directory -Force "$env:USERPROFILE\\.agents\\skills" | Out-Null
+Copy-Item -Path "$repo\\skills\\mobile-codex-dev" -Destination "$env:USERPROFILE\\.agents\\skills" -Recurse -Force`,
+        },
+      };
+
+      function setTheme(theme) {
+        root.dataset.theme = theme;
+        localStorage.setItem("mobilecodex-theme", theme);
+        const icon = theme === "dark" ? "moon" : "sun";
+        themeToggle.innerHTML = `<i data-lucide="${icon}"></i><span class="sr-only">Toggle color theme</span>`;
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }
+
+      function setInstallScript(shell) {
+        const script = installScripts[shell] || installScripts.sh;
+        installShellLabel.textContent = script.label;
+        installCommand.textContent = script.code;
+        installCommand.className = script.language;
+        installCommand.removeAttribute("data-highlighted");
+        if (window.hljs) {
+          window.hljs.highlightElement(installCommand);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if (window.hljs) {
+          window.hljs.highlightAll();
+        }
+
+        setTheme(savedTheme || (prefersLight ? "light" : "dark"));
+        setInstallScript(installShell.value);
+
+        installShell.addEventListener("change", () => {
+          setInstallScript(installShell.value);
+        });
+
+        document.querySelectorAll("[data-copy]").forEach((button) => {
+          button.addEventListener("click", async () => {
+            const code = document.querySelector(button.dataset.copy)?.textContent.trim();
+            if (!code) return;
+            await navigator.clipboard.writeText(code);
+            button.innerHTML = '<i data-lucide="check"></i>Copied';
+            window.lucide?.createIcons();
+            window.setTimeout(() => {
+              button.innerHTML = '<i data-lucide="copy"></i>Copy';
+              window.lucide?.createIcons();
+            }, 1600);
+          });
+        });
+      });
+
+      themeToggle.addEventListener("click", () => {
+        setTheme(root.dataset.theme === "dark" ? "light" : "dark");
+      });
+    </script>
+  </body>
+</html>

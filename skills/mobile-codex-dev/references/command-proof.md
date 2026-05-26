@@ -4,7 +4,7 @@ Use this for scripts, CLIs, tests, builds, generators, migrations in dry-run mod
 
 ## Run Policy
 
-Run the relevant command yourself when it is safe and local. Do not ask the mobile user to run it just to see output.
+Run the relevant command yourself when it is safe and local. Do not ask the mobile user to run it, start it, inspect it, or paste output back just so Codex can proceed.
 
 Ask first when a command may:
 - delete or overwrite user data
@@ -22,6 +22,7 @@ Always capture:
 - key stdout/stderr lines
 - generated or modified artifact paths
 - runtime duration when available or meaningful
+- background process status when a server, watcher, tunnel, worker, or simulator remains running
 
 Prefer decisive lines over full logs. Include enough surrounding output to prove the result.
 
@@ -70,5 +71,6 @@ For commands that stream logs:
 - collect the final result and stop background helpers when they are no longer needed
 
 For servers:
+- start or reuse the server yourself when safe
 - keep the server running when the user needs a preview URL
-- include the server command, port, and whether it remains running
+- include the server command, port, local URL, public URL if available, and whether it remains running

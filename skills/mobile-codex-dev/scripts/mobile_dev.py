@@ -10,11 +10,13 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 import shutil
 import subprocess
-import sys
+import tempfile
+import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -34,6 +36,8 @@ KNOWN_PORTS = {
     "rails": 3000,
     "jupyter": 8888,
 }
+
+DEFAULT_NGROK_API_URL = "http://127.0.0.1:4040/api/tunnels"
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -109,6 +113,12 @@ def detect_project(root: Path) -> dict[str, Any]:
         signals.append("rust")
         commands.extend(["cargo test", "cargo run -- --help"])
 
+    html_files = sorted(root.glob("*.html"))
+    if html_files:
+        signals.append("static-html")
+        commands.append("python -m http.server 8000")
+        ports.add(8000)
+
     if file_exists(root, "pyproject.toml", "requirements.txt", "setup.py"):
         signals.append("python")
         commands.extend(["py -m pytest", "py -m <module-or-script> --help"])
@@ -151,7 +161,17 @@ def detect_project(root: Path) -> dict[str, Any]:
 
 def recommend_references(signals: list[str]) -> list[str]:
     refs = ["references/mobile-handoff.md", "references/command-proof.md"]
-    web_signals = {"next", "vite", "astro", "sveltekit", "angular", "storybook", "expo-or-react-native", "flutter"}
+    web_signals = {
+        "next",
+        "vite",
+        "astro",
+        "sveltekit",
+        "angular",
+        "storybook",
+        "expo-or-react-native",
+        "flutter",
+        "static-html",
+    }
     if web_signals.intersection(signals):
         refs.insert(0, "references/web-previews.md")
         refs.append("references/verification-checklists.md")
@@ -240,13 +260,173 @@ def ngrok_check(format_name: str) -> int:
     return 0 if completed.returncode == 0 else 2
 
 
+def read_ngrok_api(api_url: str, timeout: float = 2.0) -> dict[str, Any]:
+    request = urllib.request.Request(api_url, headers={"Accept": "application/json"})
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
+def tunnel_matches_port(tunnel: dict[str, Any], port: int) -> bool:
+    config = tunnel.get("config") if isinstance(tunnel.get("config"), dict) else {}
+    addr = str(config.get("addr") or "")
+    return addr == str(port) or addr.endswith(f":{port}") or addr.endswith(f"//localhost:{port}") or addr.endswith(f"//127.0.0.1:{port}")
+
+
+def extract_ngrok_url(data: dict[str, Any], port: int | None = None) -> dict[str, Any] | None:
+    tunnels = data.get("tunnels")
+    if not isinstance(tunnels, list):
+        return None
+
+    candidates = [tunnel for tunnel in tunnels if isinstance(tunnel, dict)]
+    if port is not None:
+        port_matches = [tunnel for tunnel in candidates if tunnel_matches_port(tunnel, port)]
+        if port_matches:
+            candidates = port_matches
+
+    https_candidates = [
+        tunnel for tunnel in candidates if str(tunnel.get("public_url", "")).startswith("https://")
+    ]
+    ordered = https_candidates or candidates
+    for tunnel in ordered:
+        public_url = str(tunnel.get("public_url") or "")
+        if public_url:
+            return {
+                "public_url": public_url,
+                "name": tunnel.get("name"),
+                "proto": tunnel.get("proto"),
+                "config": tunnel.get("config"),
+            }
+    return None
+
+
+def read_log_tail(path: Path, lines: int) -> list[str]:
+    try:
+        content = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except Exception as exc:
+        return [f"log read failed for {path}: {exc}"]
+    tail = content[-max(lines, 1):]
+    return [f"{path}: {line}" for line in tail]
+
+
+def start_ngrok_preview(args: argparse.Namespace) -> int:
+    if args.port < 1 or args.port > 65535:
+        print_json_or_markdown(
+            {
+                "result": "ngrok preview blocked",
+                "preview": "blocked because the requested port is invalid",
+                "proof": f"`ngrok http {args.port}` was not started because ports must be between 1 and 65535",
+                "next": "Pass a valid local HTTP port between 1 and 65535.",
+            },
+            args.format,
+            "Ngrok Preview",
+        )
+        return 2
+
+    ngrok = shutil.which("ngrok")
+    command_display = f"ngrok http {args.port}"
+    if not ngrok:
+        data = {
+            "result": "ngrok preview blocked",
+            "preview": "blocked because ngrok is not installed or not on PATH",
+            "proof": f"`{command_display}` could not start: command not found",
+            "next": "Install and authenticate ngrok on this machine before requesting a public phone preview.",
+        }
+        print_json_or_markdown(data, args.format, "Ngrok Preview")
+        return 2
+
+    log_file = Path(args.log_file) if args.log_file else Path(tempfile.gettempdir()) / f"mobilecodex-ngrok-{args.port}.log"
+    log_file.parent.mkdir(parents=True, exist_ok=True)
+    log_handle = log_file.open("a", encoding="utf-8", errors="replace")
+    process: subprocess.Popen[str] | None = None
+    try:
+        process = subprocess.Popen(
+            [ngrok, "http", str(args.port), "--log", "stdout"],
+            stdout=log_handle,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+
+        deadline = time.monotonic() + args.timeout
+        last_error = ""
+        tunnel: dict[str, Any] | None = None
+        while time.monotonic() < deadline:
+            if process.poll() is not None:
+                last_error = f"ngrok exited early with code {process.returncode}"
+                break
+            try:
+                tunnel = extract_ngrok_url(read_ngrok_api(args.api_url), args.port)
+                if tunnel:
+                    break
+            except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
+                last_error = str(exc)
+            time.sleep(args.poll_interval)
+
+        if tunnel:
+            public_url = str(tunnel["public_url"])
+            data = {
+                "result": "ngrok public phone preview is running",
+                "preview": public_url,
+                "proof": [
+                    f"`{command_display}` started",
+                    f"process id {process.pid}",
+                    f"local port {args.port}",
+                    f"local URL http://127.0.0.1:{args.port}",
+                    f"ngrok API {args.api_url}",
+                    f"log file {log_file}",
+                ],
+                "next": "Open the preview URL from the phone, and keep this ngrok process running while the preview is needed.",
+            }
+            print_json_or_markdown(data, args.format, "Ngrok Preview")
+            return 0
+
+        if process and process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
+        tail = read_log_tail(log_file, args.log_lines)
+        data = {
+            "result": "ngrok preview blocked",
+            "preview": "blocked because no forwarding URL was found",
+            "proof": [
+                f"`{command_display}` did not produce a tunnel within {args.timeout:g}s",
+                f"ngrok API {args.api_url}",
+                f"last error {last_error or 'none'}",
+                *tail,
+            ],
+            "next": "Verify ngrok is authenticated, no other ngrok agent is conflicting, and the local app responds on the requested port.",
+        }
+        print_json_or_markdown(data, args.format, "Ngrok Preview")
+        return 2
+    except Exception as exc:
+        if process and process.poll() is None:
+            process.terminate()
+        data = {
+            "result": "ngrok preview blocked",
+            "preview": "blocked because ngrok failed to start",
+            "proof": f"`{command_display}` failed: {exc}",
+            "next": "Verify ngrok installation, authentication, and local port availability.",
+        }
+        print_json_or_markdown(data, args.format, "Ngrok Preview")
+        return 2
+    finally:
+        log_handle.close()
+
+
 def print_json_or_markdown(data: dict[str, Any], format_name: str, title: str) -> None:
     if format_name == "json":
         print(json.dumps(data, indent=2))
         return
     print(f"# {title}")
     for key, value in data.items():
-        print(f"- {key.replace('_', ' ').title()}: {value}")
+        label = key.replace("_", " ").title()
+        if isinstance(value, list):
+            print(f"- {label}:")
+            for item in value:
+                print(f"  - {item}")
+        else:
+            print(f"- {label}: {value}")
 
 
 def format_handoff(args: argparse.Namespace) -> str:
@@ -263,15 +443,6 @@ def format_handoff(args: argparse.Namespace) -> str:
     return "\n".join(lines)
 
 
-def read_log_tail(path: Path, lines: int) -> list[str]:
-    try:
-        content = path.read_text(encoding="utf-8", errors="replace").splitlines()
-    except Exception as exc:
-        return [f"log read failed for {path}: {exc}"]
-    tail = content[-max(lines, 1):]
-    return [f"{path}: {line}" for line in tail]
-
-
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Mobile Codex Dev helper")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -282,6 +453,15 @@ def main(argv: list[str] | None = None) -> int:
 
     ngrok_parser = subparsers.add_parser("ngrok-check", help="Check ngrok availability")
     ngrok_parser.add_argument("--format", choices=["markdown", "json"], default="markdown")
+
+    ngrok_preview_parser = subparsers.add_parser("ngrok-preview", help="Start ngrok and extract a phone preview URL")
+    ngrok_preview_parser.add_argument("--port", type=int, required=True, help="Local HTTP port to expose")
+    ngrok_preview_parser.add_argument("--api-url", default=DEFAULT_NGROK_API_URL, help="ngrok local API URL")
+    ngrok_preview_parser.add_argument("--timeout", type=float, default=20.0, help="Seconds to wait for a forwarding URL")
+    ngrok_preview_parser.add_argument("--poll-interval", type=float, default=0.5, help="Seconds between API checks")
+    ngrok_preview_parser.add_argument("--log-file", help="Path to capture ngrok logs")
+    ngrok_preview_parser.add_argument("--log-lines", type=int, default=8)
+    ngrok_preview_parser.add_argument("--format", choices=["markdown", "json"], default="markdown")
 
     handoff_parser = subparsers.add_parser("handoff", help="Format a compact mobile handoff")
     handoff_parser.add_argument("--result", required=True)
@@ -303,6 +483,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "ngrok-check":
         return ngrok_check(args.format)
+
+    if args.command == "ngrok-preview":
+        return start_ngrok_preview(args)
 
     if args.command == "handoff":
         print(format_handoff(args))

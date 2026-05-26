@@ -10,6 +10,7 @@ Keep updates short and concrete:
 - what was learned
 - what proof is being collected
 - whether the preview or command is blocked
+- what remains running for the user's phone preview
 
 Do not stream noisy logs. Mention only decisive changes, failures, URLs, and artifacts.
 
@@ -50,7 +51,7 @@ Next: Add JSON output, support ignore globs, or package the binary.
 Result: Local app starts, but phone preview is blocked.
 Preview: blocked because `ngrok` is not installed on PATH.
 Proof: `ngrok http 5173` failed: command not found. Local server responded at http://localhost:5173.
-Next: Install ngrok, then run `ngrok config add-authtoken <token>`.
+Next: ngrok must be installed and authenticated on this machine before Codex can create a public preview URL.
 ```
 
 ## Mobile Style Rules
@@ -59,5 +60,6 @@ Next: Install ngrok, then run `ngrok config add-authtoken <token>`.
 - Keep logs clipped to the few lines that matter.
 - Use absolute file paths for local artifacts.
 - Include screenshots inline when the final answer is visual.
+- Include server URL, port, and running status when a preview is part of the task.
 - State assumptions only when they affected the implementation.
 - Give choices as short next actions, not open-ended homework.
