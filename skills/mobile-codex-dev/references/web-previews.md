@@ -1,6 +1,6 @@
 # Web Previews
 
-Use this when a project has a browser UI, static page, local dev server, Storybook, docs site, API docs UI, or any output the user should open on a phone. Assume Codex owns the full preview loop because the user cannot reach the laptop.
+Use this when a project has a browser UI, static page, local dev server, Storybook, docs site, API docs UI, or any output the user should open on a phone. Assume Codex owns the full preview loop because the user cannot reach the laptop. A preview is not complete until the user can tell from chat what is running, what URL is safe to open, and what proof was captured.
 
 ## Workflow
 
@@ -12,7 +12,8 @@ Use this when a project has a browser UI, static page, local dev server, Storybo
 6. Start the tunnel with `scripts/mobile_dev.py ngrok-preview --port <port>` when the user needs phone access and the safety gate passes. Do this only after the local server responds.
 7. Use the extracted `https://...` forwarding URL from the helper output. Never invent a URL or copy a stale URL.
 8. Capture at least one mobile-sized screenshot when visual output matters.
-9. Finish with the mobile handoff from `mobile-handoff.md`.
+9. Label the preview with the workspace/app name when the user may have multiple Codex sessions open.
+10. Finish with the mobile handoff from `mobile-handoff.md`, including whether the server or tunnel is still running.
 
 ## Ngrok Only Policy
 
@@ -40,6 +41,19 @@ Next: create/sign into an ngrok account, install the ngrok agent, then run `ngro
 ```
 
 Still provide local proof when available: server logs, local URL, screenshots from localhost, or test output.
+
+## Mobile Preview Continuity
+
+When a public preview is provided, make the phone handoff self-contained:
+
+- include the local URL and the ngrok URL
+- state the server command, port, and whether it remains running
+- state the tunnel command and whether the tunnel remains running
+- include the freshest mobile screenshot path or inline image
+- summarize console and network status after the latest reload
+- mention if clicking, auth, seed data, or environment setup is required before the phone preview is meaningful
+
+If the preview may expire when the process stops, say so directly.
 
 ## Safety Gate
 

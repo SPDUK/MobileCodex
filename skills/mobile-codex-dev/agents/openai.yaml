@@ -1,4 +1,4 @@
 interface:
   display_name: "Mobile Codex Dev"
-  short_description: "Away-from-laptop engineering with proof"
-  default_prompt: "Use $mobile-codex-dev to handle this as if I cannot reach my laptop: inspect the repo, run safe commands and servers, verify the result, capture concise proof, and provide a phone-friendly handoff with an ngrok preview when safe."
+  short_description: "First-class Codex Mobile continuation"
+  default_prompt: "Use $mobile-codex-dev to keep this Codex session moving from my phone: inspect the repo, run safe commands and servers, verify the result, capture concise proof, keep local state visible in chat, and provide a resumable handoff with an ngrok preview when safe."

@@ -1,14 +1,14 @@
 # Mobile Codex Dev
 
-**A Codex skill for shipping real software work from your phone.**
+**A first-class continuation skill for Codex Mobile.**
 
-Mobile Codex Dev teaches Codex to behave like a capable remote pair when you are away from your desk: inspect the repo, run the right commands, verify the result, capture proof, and hand back the useful bits in a phone-readable format.
+Mobile Codex Dev supports [Codex Mobile](https://chatgpt.com/codex/mobile/) by teaching Codex to keep the same desktop workspace moving while your phone is the control surface. It inspects the repo, runs the right commands, verifies the result, captures proof, and hands back the useful bits in a phone-readable format.
 
-No "check your terminal." No mystery localhost. No giant log dumps. Just the change, the preview, the proof, and the next useful move.
+No "check your terminal." No mystery localhost. No giant log dumps. Just the current state, the change, the preview, the proof, and the next useful move.
 
 ## Step 1: Use Codex From Anywhere
 
-Mobile Codex Dev is built as the practical partner workflow for [Work with Codex from anywhere](https://openai.com/index/work-with-codex-from-anywhere/). Codex mobile gives you access to the live development environment from your phone; this skill makes that environment behave correctly for away-from-laptop work.
+Mobile Codex Dev is built as the practical partner workflow for [Work with Codex from anywhere](https://openai.com/index/work-with-codex-from-anywhere/) and [Codex Mobile](https://chatgpt.com/codex/mobile/). Codex Mobile gives you access to the live development environment from your phone; this skill makes that environment behave like a continuous, inspectable work session instead of a black box.
 
 Use it when your phone is the control surface and Codex needs to:
 
@@ -17,6 +17,7 @@ Use it when your phone is the control surface and Codex needs to:
 - start local servers and report their status
 - create an ngrok phone preview when safe
 - capture browser proof and screenshots
+- keep local state visible while work continues
 - return a compact mobile handoff
 
 ## Preflight: Run Doctor
@@ -63,7 +64,17 @@ Proof: commands, screenshots, logs, exit codes, or artifact paths
 Next: the 1-3 most useful follow-up options
 ```
 
-That simple contract is the product. It keeps Codex accountable, keeps you unblocked, and makes remote development feel deliberate instead of blurry.
+That simple contract is the product. It keeps Codex accountable, keeps you unblocked, and makes remote development feel continuous instead of blurry.
+
+## Continuation Contract
+
+Codex Mobile is the control surface; the workspace stays on the machine Codex is already using. This skill pushes Codex to:
+
+- keep working unless approval, sensitive exposure, destructive side effects, or a real blocker stops it
+- make local state visible in chat with URLs, screenshots, output, paths, ports, process status, and errors
+- label previews and artifacts so multiple mobile Codex sessions stay easy to distinguish
+- leave incomplete work resumable with workspace, branch, changed files, running servers, last proof, last failure, and next action
+- ask only targeted approval questions that can be answered from a phone
 
 ## Install
 
@@ -86,7 +97,7 @@ cp -R ./skills/mobile-codex-dev ~/.agents/skills/
 Then start a fresh Codex session or invoke it explicitly:
 
 ```text
-Use $mobile-codex-dev to build this feature and show me proof I can inspect from my phone.
+Use $mobile-codex-dev to keep this moving while I am on my phone and show me proof I can inspect here.
 ```
 
 ## Try It
@@ -117,7 +128,7 @@ Use $mobile-codex-dev to finish this CLI and run a realistic sample command.
 | Backend APIs | Run tests or a local service, exercise representative endpoints, report status codes and key responses. |
 | CLIs and scripts | Run safe sample commands, include exit codes, summarize decisive stdout/stderr, report generated files. |
 | Rust, Go, Python, Node | Prefer local project scripts and standard verification commands for each stack. |
-| Mobile handoffs | Keep progress updates and final replies concise, evidence-backed, and useful from a phone. |
+| Mobile handoffs | Keep progress updates and final replies concise, evidence-backed, resumable, and useful from a phone. |
 | Public previews | Use `ngrok http <port>` only, after local verification and safety checks, with helper-based URL extraction. |
 
 ## Public Preview Policy
