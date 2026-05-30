@@ -1,0 +1,48 @@
+# MobileCodex
+
+> MobileCodex is a support skill for Codex Mobile. It helps users continue Codex agent work from a phone while keeping the real development workspace visible, testable, and resumable.
+
+Site URL: https://spduk.github.io/MobileCodex/
+Official repository: https://github.com/SPDUK/MobileCodex
+
+Related official Codex Mobile surface: https://chatgpt.com/codex/mobile/
+
+## What MobileCodex Does
+
+- Creates session snapshots with workspace, branch, changed files, ports, registered servers, recent proof artifacts, and suggested next references.
+- Starts and tracks local preview servers with PID, command, port, local URL, running status, and log file.
+- Captures mobile and desktop UX proof screenshots for local web previews.
+- Creates proof bundles with screenshots, logs, changed files, server state, and snapshot details.
+- Runs doctor checks for Python, Node, npm, git, ngrok, Playwright/UX proof readiness, proof storage, skill validation, installed-copy drift, and server registry health.
+- Formats phone-readable handoffs with result, preview, proof, state, and next action.
+
+## Primary User Intent
+
+Use MobileCodex when a Codex user is away from the laptop, working from Codex Mobile, or needs the agent to keep work visible in chat rather than asking the user to inspect a terminal, browser, file explorer, or local server.
+
+## Key Commands
+
+```bash
+python skills/mobile-codex-dev/scripts/mobile_dev.py menu
+python skills/mobile-codex-dev/scripts/mobile_dev.py doctor --root .
+python skills/mobile-codex-dev/scripts/mobile_dev.py snapshot --root . --format markdown
+python skills/mobile-codex-dev/scripts/mobile_dev.py server-start --root . --name app --port 5173 -- <server command>
+python skills/mobile-codex-dev/scripts/mobile_dev.py server-list --root .
+python skills/mobile-codex-dev/scripts/mobile_dev.py server-stop --root . --name app
+python skills/mobile-codex-dev/scripts/mobile_dev.py ux-proof --root . --url http://127.0.0.1:5173
+python skills/mobile-codex-dev/scripts/mobile_dev.py proof-bundle --root . --format markdown
+python skills/mobile-codex-dev/scripts/mobile_dev.py ngrok-preview --port 5173
+python skills/mobile-codex-dev/scripts/mobile_dev.py handoff --result "..." --preview "..." --proof "..." --state "..." --next "..."
+```
+
+## Important Files
+
+- `README.md`: Setup, usage, command examples, and product positioning.
+- `index.html`: Static multilingual landing page for MobileCodex.
+- `skills/mobile-codex-dev/SKILL.md`: Codex skill instructions.
+- `skills/mobile-codex-dev/scripts/mobile_dev.py`: Helper CLI for snapshots, server registry, proof bundles, UX proof, doctor checks, ngrok preview, and handoff formatting.
+- `skills/mobile-codex-dev/references/`: Deeper workflow guidance for previews, command proof, handoffs, verification, and stack playbooks.
+
+## Positioning
+
+MobileCodex does not replace Codex Mobile. It extends the official Codex Mobile workflow by making remote agent sessions easier to trust from a phone.

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://spduk.github.io/MobileCodex/sitemap.xml
+
+AI-Content-Declaration: MobileCodex is a developer tool landing page and open-source skill repository intended to be indexed and summarized by search engines and LLM-based discovery tools.
