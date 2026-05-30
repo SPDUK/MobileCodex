@@ -932,7 +932,7 @@
           <article class="feature">
             <i data-lucide="stethoscope" aria-hidden="true"></i>
             <h3>Setup doctor</h3>
-            <p>Codex checks Python, Node, git, ngrok auth, browser proof tooling, ports, skill files, and README setup.</p>
+            <p>Codex checks runtimes, ngrok, UX proof readiness, installed skill drift, proof storage, registry health, and README setup.</p>
           </article>
           <article class="feature">
             <i data-lucide="scan-search" aria-hidden="true"></i>
@@ -941,8 +941,8 @@
           </article>
           <article class="feature">
             <i data-lucide="server-cog" aria-hidden="true"></i>
-            <h3>Server handling</h3>
-            <p>For web work, Codex starts or reuses local servers and reports URL, port, logs, and running status.</p>
+            <h3>Server registry</h3>
+            <p>Codex-started previews are tracked with command, PID, port, URL, running status, and log path outside git.</p>
           </article>
           <article class="feature">
             <i data-lucide="link-2" aria-hidden="true"></i>
@@ -956,8 +956,18 @@
           </article>
           <article class="feature">
             <i data-lucide="radio-tower" aria-hidden="true"></i>
-            <h3>Resumable state</h3>
-            <p>Codex reports workspace, branch, changed files, running processes, last proof, and the next safe action.</p>
+            <h3>Session snapshots</h3>
+            <p>Codex reports workspace, branch, changed files, running servers, ports, recent proof, and the next safe action.</p>
+          </article>
+          <article class="feature">
+            <i data-lucide="package-check" aria-hidden="true"></i>
+            <h3>Proof bundles</h3>
+            <p>Screenshots, logs, server state, changed files, and snapshot details are gathered into one mobile-readable proof file.</p>
+          </article>
+          <article class="feature">
+            <i data-lucide="smartphone-nfc" aria-hidden="true"></i>
+            <h3>UX proof script</h3>
+            <p>Local previews can produce mobile and desktop screenshots plus browser evidence when Playwright tooling is available.</p>
           </article>
         </div>
       </section>
@@ -994,14 +1004,14 @@
               <span class="step-number">3</span>
               <div>
                 <h3>Run doctor</h3>
-                <p>Check ngrok account setup, auth token, browser proof tooling, ports, skill files, and install copy before you need them.</p>
+                <p>Check ngrok setup, UX proof readiness, server registry health, proof storage, skill files, and install copy before you need them.</p>
               </div>
             </article>
             <article class="step">
               <span class="step-number">4</span>
               <div>
                 <h3>Ask for proof</h3>
-                <p>Use it for server previews, ngrok URL extraction, screenshots, logs, blockers, and compact handoffs.</p>
+                <p>Use it for snapshots, registered servers, proof bundles, UX screenshots, ngrok URLs, blockers, and compact handoffs.</p>
               </div>
             </article>
           </div>
@@ -1046,23 +1056,23 @@ python "$repo/skills/mobile-codex-dev/scripts/mobile_dev.py" doctor --root "$PWD
         <div class="moment-grid">
           <article class="moment">
             <i data-lucide="play"></i>
-            <h3>Run safe commands</h3>
-            <p>Codex should run safe local commands itself instead of asking you to run them from a laptop.</p>
+            <h3>Snapshot state</h3>
+            <p>Codex should summarize branch, changed files, ports, servers, recent proof, and suggested next steps before pausing.</p>
           </article>
           <article class="moment">
             <i data-lucide="globe-lock"></i>
-            <h3>Create safe previews</h3>
-            <p>When web output exists, Codex should verify locally, start ngrok, extract the real URL, and report the tunnel status.</p>
+            <h3>Track previews</h3>
+            <p>When web output exists, Codex should register local servers, verify locally, and report process, port, URL, and logs.</p>
           </article>
           <article class="moment">
             <i data-lucide="camera"></i>
-            <h3>Capture browser proof</h3>
-            <p>Visual work should include mobile screenshots and browser evidence, not a vague "looks good."</p>
+            <h3>Capture UX proof</h3>
+            <p>Visual work should include mobile screenshots, desktop screenshots when useful, and browser evidence where tooling allows it.</p>
           </article>
           <article class="moment">
             <i data-lucide="file-check-2"></i>
-            <h3>Keep work resumable</h3>
-            <p>Final replies should include result, preview or blocker, proof, current state, and the next useful move.</p>
+            <h3>Bundle proof</h3>
+            <p>Final replies can point to one proof bundle with screenshots, logs, changed files, server state, and next action.</p>
           </article>
         </div>
       </section>
@@ -1086,25 +1096,25 @@ python "$repo/skills/mobile-codex-dev/scripts/mobile_dev.py" doctor --root "$PWD
               <tr>
                 <td>Initial triage</td>
                 <td><span class="partial">Depends</span> on prompt detail.</td>
-                <td><span class="yes">Built in</span> repo inspection and stack detection.</td>
-                <td>The skill pushes Codex to inspect first and ask fewer unnecessary questions.</td>
+                <td><span class="yes">Built in</span> snapshots, repo inspection, and stack detection.</td>
+                <td>The skill pushes Codex to inspect first and preserve resumable state.</td>
               </tr>
               <tr>
                 <td>Visual proof</td>
                 <td><span class="partial">Optional</span> screenshots or browser checks.</td>
-                <td><span class="yes">Expected</span> server startup and mobile viewport verification for UI work.</td>
+                <td><span class="yes">Expected</span> UX proof screenshots and mobile viewport verification for UI work.</td>
                 <td>The user can review output from a phone without reaching for the laptop.</td>
               </tr>
               <tr>
                 <td>Public previews</td>
                 <td><span class="partial">Manual</span> tunnel setup.</td>
-                <td><span class="yes">Automated</span> ngrok URL extraction.</td>
-                <td>The helper starts ngrok, reads the local API, reports the real URL, and explains blockers.</td>
+                <td><span class="yes">Tracked</span> local servers and automated ngrok URL extraction.</td>
+                <td>The helper reports PIDs, ports, log paths, real public URLs, and blockers.</td>
               </tr>
               <tr>
                 <td>Final handoff</td>
                 <td><span class="partial">Variable</span> summary depth.</td>
-                <td><span class="yes">Resumable</span> result, proof, blockers, running state, and next step.</td>
+                <td><span class="yes">Bundled</span> result, proof, blockers, running state, and next step.</td>
                 <td>The skill makes completion auditable from chat without local desktop access.</td>
               </tr>
             </tbody>

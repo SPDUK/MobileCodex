@@ -63,6 +63,8 @@ If a command creates files, report:
 
 Do not say only "generated successfully" when the user cannot inspect the file from mobile.
 
+For larger tasks, run `scripts/mobile_dev.py proof-bundle --root <workspace>` after verification. Include the generated `proof.md` path so screenshots, logs, changed files, server status, and snapshot state are available from one place.
+
 ## Long Running Work
 
 For commands that stream logs:
@@ -72,5 +74,8 @@ For commands that stream logs:
 
 For servers:
 - start or reuse the server yourself when safe
+- prefer `scripts/mobile_dev.py server-start` for servers Codex launches so PID, log file, port, and URL are tracked
 - keep the server running when the user needs a preview URL
 - include the server command, port, local URL, public URL if available, and whether it remains running
+
+Use `scripts/mobile_dev.py snapshot --root <workspace>` to gather resumable state when the thread may be picked up later from a phone.

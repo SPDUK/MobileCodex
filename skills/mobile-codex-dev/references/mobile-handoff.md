@@ -6,6 +6,8 @@ Use this for progress updates and final replies. The user may be reading from a 
 
 Treat the chat as the user's live dashboard for the remote computer. Every update should help them answer: is Codex still working, what changed, what can I open, what needs approval, and can this be resumed later?
 
+Run `scripts/mobile_dev.py snapshot --root <workspace> --format markdown` before pausing, resuming, or handing off incomplete work when local state may be hard to reconstruct from chat.
+
 ## Progress Updates
 
 Keep updates short and concrete:
@@ -47,6 +49,8 @@ Visible: http://localhost:5173, screenshot at C:\path\mobile.png.
 Running: `npm run dev` on 5173; no public tunnel yet.
 Next: run build, then open ngrok if approved.
 ```
+
+For larger tasks, run `scripts/mobile_dev.py proof-bundle --root <workspace>` and include the generated `proof.md` path in the final handoff.
 
 ## Final Handoff Template
 
@@ -99,6 +103,8 @@ Next: ngrok must be installed and authenticated on this machine before Codex can
 - Use absolute file paths for local artifacts.
 - Include screenshots inline when the final answer is visual.
 - Include server URL, port, and running status when a preview is part of the task.
+- Prefer `server-list` output for running preview status when the server was started with the MobileCodex registry.
+- Use proof bundles for multi-step work where screenshots, logs, and state would otherwise be scattered across the conversation.
 - State assumptions only when they affected the implementation.
 - Give choices as short next actions, not open-ended homework.
 - Label previews and artifacts with the workspace or app name when multiple Codex sessions may be active.

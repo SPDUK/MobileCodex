@@ -15,6 +15,7 @@ Use the smallest checklist that proves the task actually works on mobile.
 
 - Open the local URL, localhost port, or `file://` target in Chrome DevTools or the in-app browser when available.
 - Start or reuse the local server when the page is not a direct static file.
+- Use `scripts/mobile_dev.py ux-proof --root <workspace> --url <local-url>` when Playwright tooling is available. It writes screenshots and a concise browser proof summary under `proof/`.
 - Wait for expected page text or controls before taking proof screenshots.
 - Capture a desktop screenshot when it helps show the full layout.
 - Mobile viewport screenshot was captured when possible.
@@ -30,6 +31,7 @@ Use the smallest checklist that proves the task actually works on mobile.
 ## Chrome DevTools Proof
 
 - Use Chrome DevTools or the in-app browser for local visual QA when available.
+- Use `ux-proof` as the repeatable helper path for mobile and desktop screenshots; use Chrome DevTools or the in-app browser for deeper interaction and console/network investigation when needed.
 - Open the exact page the user should see, including `file://` static HTML pages when no dev server is needed.
 - Capture screenshots at desktop and phone widths for responsive UI changes.
 - Inspect console messages and network requests after each reload.

@@ -6,14 +6,14 @@ Use this when a project has a browser UI, static page, local dev server, Storybo
 
 1. Discover the server command and candidate port from package scripts, config files, framework defaults, static files, or running process logs.
 2. Install dependencies if the project clearly needs them and the install is local, safe, and expected for the stack.
-3. Start or reuse the local server. Capture command, port, PID or process note, and the first useful ready/error lines.
-4. Verify locally before exposing it. Use Codex browser/proof tooling when available.
+3. Start or reuse the local server. Prefer `scripts/mobile_dev.py server-start --root <workspace> --name <label> --port <port> -- <command...>` so PID, port, URL, and logs are registered.
+4. Verify locally before exposing it. Use `scripts/mobile_dev.py ux-proof --root <workspace> --url <local-url>` or Codex browser/proof tooling when available.
 5. If this is the first public preview attempt or tooling looks incomplete, run `scripts/mobile_dev.py doctor --root <workspace>` before tunneling.
 6. Start the tunnel with `scripts/mobile_dev.py ngrok-preview --port <port>` when the user needs phone access and the safety gate passes. Do this only after the local server responds.
 7. Use the extracted `https://...` forwarding URL from the helper output. Never invent a URL or copy a stale URL.
 8. Capture at least one mobile-sized screenshot when visual output matters.
 9. Label the preview with the workspace/app name when the user may have multiple Codex sessions open.
-10. Finish with the mobile handoff from `mobile-handoff.md`, including whether the server or tunnel is still running.
+10. Finish with the mobile handoff from `mobile-handoff.md`, including `server-list` output and whether the tunnel is still running.
 
 ## Ngrok Only Policy
 
@@ -54,6 +54,18 @@ When a public preview is provided, make the phone handoff self-contained:
 - mention if clicking, auth, seed data, or environment setup is required before the phone preview is meaningful
 
 If the preview may expire when the process stops, say so directly.
+
+## Server Registry
+
+Use the registry for preview servers Codex starts:
+
+```bash
+python scripts/mobile_dev.py server-start --root . --name app --port 5173 -- npm run dev -- --host 127.0.0.1
+python scripts/mobile_dev.py server-list --root .
+python scripts/mobile_dev.py server-stop --root . --name app
+```
+
+Only stop processes recorded in the registry. If a user already has a server running outside the registry, identify it and report it without claiming registry ownership.
 
 ## Safety Gate
 

@@ -16,14 +16,15 @@ Assume Codex must inspect the repo, make safe local decisions, run commands, sta
 1. Treat short mobile prompts as enough to begin when the risk is low.
 2. Inspect the repository and classify the work before asking questions.
 3. For first-time setup, preview failures, or missing-tool suspicion, run `scripts/mobile_dev.py doctor --root <workspace> --format markdown` and report the action_required items.
-4. Run `scripts/mobile_dev.py detect --root <workspace> --format markdown` when project shape is unclear.
-5. Choose the relevant reference file below and follow it.
-6. Run the relevant local commands yourself when safe, including installs, tests, builds, scripts, and dev servers.
-7. For browser work, start or reuse the local server, open the target with available browser tooling, capture mobile proof, and keep the server running when the user needs a live preview.
-8. Keep the phone view useful throughout the task: send concise progress updates for milestones, decisions, approvals needed, preview URLs, screenshots, failing commands, and blockers.
-9. For visual work, use Chrome DevTools or the in-app browser when available to open the target, capture screenshots, and inspect console/network status.
-10. Bring important local evidence back into chat: URLs, screenshots, command output, exit codes, generated paths, background process status, and errors.
-11. Before stopping, leave the thread resumable from mobile: state what is done, what is running, what can be opened, what remains, and the safest next action.
+4. Run `scripts/mobile_dev.py snapshot --root <workspace> --format markdown` when resuming, pausing, or handing off incomplete work.
+5. Run `scripts/mobile_dev.py detect --root <workspace> --format markdown` when project shape is unclear.
+6. Choose the relevant reference file below and follow it.
+7. Run the relevant local commands yourself when safe, including installs, tests, builds, scripts, and dev servers.
+8. For browser work, use `server-start`/`server-list` for preview servers when practical, run `ux-proof` when Playwright tooling is available, and keep the server running when the user needs a live preview.
+9. Keep the phone view useful throughout the task: send concise progress updates for milestones, decisions, approvals needed, preview URLs, screenshots, failing commands, and blockers.
+10. For visual work, use Chrome DevTools or the in-app browser when available to open the target, capture screenshots, and inspect console/network status.
+11. Bring important local evidence back into chat: URLs, screenshots, command output, exit codes, generated paths, background process status, and errors.
+12. Before stopping, leave the thread resumable from mobile: state what is done, what is running, what can be opened, what remains, and the safest next action.
 
 ## Mobile Continuation Contract
 
@@ -49,10 +50,16 @@ Use `scripts/mobile_dev.py` for repeatable mobile-dev support:
 
 ```bash
 python scripts/mobile_dev.py doctor --root . --format markdown
+python scripts/mobile_dev.py snapshot --root . --format markdown
 python scripts/mobile_dev.py detect --root . --format markdown
+python scripts/mobile_dev.py server-start --root . --name app --port 5173 -- npm run dev -- --host 127.0.0.1
+python scripts/mobile_dev.py server-list --root . --format markdown
+python scripts/mobile_dev.py server-stop --root . --name app
+python scripts/mobile_dev.py proof-bundle --root . --format markdown
+python scripts/mobile_dev.py ux-proof --root . --url http://127.0.0.1:5173 --format markdown
 python scripts/mobile_dev.py ngrok-check
 python scripts/mobile_dev.py ngrok-preview --port 5173
-python scripts/mobile_dev.py handoff --result "..." --preview "..." --proof "..." --next "..."
+python scripts/mobile_dev.py handoff --result "..." --preview "..." --proof "..." --state "..." --next "..."
 ```
 
 The script is advisory. It does not replace reading the codebase or running the real project commands.

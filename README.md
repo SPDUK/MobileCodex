@@ -18,6 +18,7 @@ Use it when your phone is the control surface and Codex needs to:
 - create an ngrok phone preview when safe
 - capture browser proof and screenshots
 - keep local state visible while work continues
+- create session snapshots, proof bundles, and registered server handoffs
 - return a compact mobile handoff
 
 ## Preflight: Run Doctor
@@ -34,6 +35,11 @@ Doctor checks the practical setup pieces that make away-from-laptop work dependa
 - `ngrok` installation and local authtoken configuration
 - Playwright/browser proof tooling
 - common preview ports
+- session snapshot readiness
+- server registry health
+- proof directory health
+- installed skill copy drift
+- mobile UX proof readiness
 - required skill files and Codex skill validation when the local validator exists
 - README install path and first-time setup copy
 
@@ -49,6 +55,9 @@ Codex should do the local work itself, then bring the important evidence back to
 - concise stdout/stderr summaries
 - browser screenshots for visual changes
 - local server status and ports
+- session snapshots for resumable state
+- server registry entries with PID, port, URL, and log path
+- proof bundles with screenshots, logs, changed files, and snapshot state
 - `ngrok` phone previews with real URL extraction when safe
 - exact blockers when previewing is not possible
 - final handoffs that are short enough to read on the go
@@ -120,6 +129,27 @@ Use $mobile-codex-dev to inspect this repo, choose the safest next step, and sho
 Use $mobile-codex-dev to finish this CLI and run a realistic sample command.
 ```
 
+## What Can I Ask For?
+
+Run the capability menu any time you want the current list of MobileCodex actions:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py menu
+```
+
+The menu is designed for phone handoffs. It shows what to ask, what helper command Codex can run, and what proof or state comes back.
+
+| Ask for | What Codex should do | Helper command |
+| --- | --- | --- |
+| "Show me the current session state." | Summarize workspace, branch, changed files, ports, servers, recent proof, and suggested references. | `snapshot --root .` |
+| "Start the app preview and keep it visible." | Start a tracked local server with PID, port, URL, command, and log path. | `server-start --root . --name app --port <port> -- <cmd>` |
+| "What previews are still running?" | List MobileCodex-owned preview servers and status. | `server-list --root .` |
+| "Capture mobile proof for this page." | Save mobile and desktop screenshots, plus browser evidence when local Playwright is available. | `ux-proof --root . --url <local-url>` |
+| "Bundle the proof so I can review later." | Create one `proof.md` with snapshot state, artifacts, logs, changed files, and server state. | `proof-bundle --root .` |
+| "Check if this machine is ready." | Run readiness checks for runtimes, ngrok, proof tooling, registry health, proof storage, and skill drift. | `doctor --root .` |
+| "Give me a safe phone preview URL." | Start ngrok only after local verification and safety checks, then report the real forwarding URL. | `ngrok-preview --port <port>` |
+| "Summarize where we landed." | Produce a compact Result / Preview / Proof / State / Next handoff. | `handoff ...` |
+
 ## What It Covers
 
 | Workflow | What Codex is guided to do |
@@ -128,6 +158,10 @@ Use $mobile-codex-dev to finish this CLI and run a realistic sample command.
 | Backend APIs | Run tests or a local service, exercise representative endpoints, report status codes and key responses. |
 | CLIs and scripts | Run safe sample commands, include exit codes, summarize decisive stdout/stderr, report generated files. |
 | Rust, Go, Python, Node | Prefer local project scripts and standard verification commands for each stack. |
+| Session snapshots | Summarize workspace, branch, dirty files, detected stack, ports, registered servers, and recent proof artifacts. |
+| Server registry | Track Codex-started preview servers with PID, port, URL, command, and log path outside git. |
+| Proof bundles | Gather snapshot state, artifacts, server status, changed files, and log tails into one `proof.md`. |
+| Mobile UX proof | Capture mobile and desktop screenshots with Playwright tooling, plus browser metadata when available. |
 | Mobile handoffs | Keep progress updates and final replies concise, evidence-backed, resumable, and useful from a phone. |
 | Public previews | Use `ngrok http <port>` only, after local verification and safety checks, with helper-based URL extraction. |
 
@@ -173,6 +207,12 @@ The root `index.html` is a single-file demo page for the skill. The skill itself
 
 The bundled helper is intentionally small. It gives Codex quick, repeatable checks without replacing normal engineering judgment.
 
+Show the phone-readable capability menu:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py menu
+```
+
 Run first-time setup checks:
 
 ```powershell
@@ -184,6 +224,34 @@ Detect project shape:
 ```powershell
 py .\skills\mobile-codex-dev\scripts\mobile_dev.py detect --root . --format markdown
 ```
+
+Create a resumable session snapshot:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py snapshot --root . --format markdown
+```
+
+Start, inspect, and stop a registered preview server:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py server-start --root . --name app --port 8000 -- py -m http.server 8000 --bind 127.0.0.1
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py server-list --root .
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py server-stop --root . --name app
+```
+
+Create a proof bundle:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py proof-bundle --root . --format markdown
+```
+
+Capture mobile UX proof for a local preview:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py ux-proof --root . --url http://127.0.0.1:8000/index.html
+```
+
+When a project has a local Playwright dependency, `ux-proof` can collect console, failed request, and horizontal-scroll checks. Without a local dependency, it uses the `npx playwright screenshot` path for screenshot proof and basic page metadata.
 
 Check `ngrok` availability:
 
@@ -204,6 +272,7 @@ py .\skills\mobile-codex-dev\scripts\mobile_dev.py handoff `
   --result "Updated the CLI parser" `
   --preview "CLI output summarized below" `
   --proof "tests exited 0" `
+  --state "No servers left running" `
   --next "Add JSON output"
 ```
 
