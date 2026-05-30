@@ -39,6 +39,15 @@ python skills/mobile-codex-dev/scripts/mobile_dev.py handoff --result "..." --pr
 
 - `README.md`: Setup, usage, command examples, and product positioning.
 - `index.html`: Static multilingual landing page for MobileCodex.
+- `CONTRIBUTING.md`: Contribution and feedback guidance for MobileCodex workflows.
+- `docs/repo-launch-checklist.md`: GitHub discovery, search, LLM indexing, and feedback setup checklist.
+- `docs/codex-mobile-handoff.md`: Codex Mobile handoff workflow and result/preview/proof/state/next contract.
+- `docs/mobile-preview-workflow.md`: Local and public preview guidance for Codex Mobile.
+- `docs/server-registry.md`: Safe tracked preview server workflow.
+- `docs/ux-proof-examples.md`: Mobile and desktop UX proof usage examples.
+- `docs/proof-bundle-examples.md`: Proof bundle usage examples.
+- `examples/`: Real Codex Mobile workflow examples for previews, bugfixes, UX proof, snapshots, and proof bundles.
+- `.github/ISSUE_TEMPLATE/`: Feedback paths for bugs, feature requests, and mobile workflow reports.
 - `skills/mobile-codex-dev/SKILL.md`: Codex skill instructions.
 - `skills/mobile-codex-dev/scripts/mobile_dev.py`: Helper CLI for snapshots, server registry, proof bundles, UX proof, doctor checks, ngrok preview, and handoff formatting.
 - `skills/mobile-codex-dev/references/`: Deeper workflow guidance for previews, command proof, handoffs, verification, and stack playbooks.

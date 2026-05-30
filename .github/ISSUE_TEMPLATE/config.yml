@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Codex Mobile
+    url: https://chatgpt.com/codex/mobile/
+    about: Open the official Codex Mobile surface.
+  - name: MobileCodex Site
+    url: https://spduk.github.io/MobileCodex/
+    about: Read the landing page and quick-start flow.

@@ -860,6 +860,13 @@
         line-height: 1.6;
       }
 
+      .doc-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
       .footer {
         padding: 34px 0 46px;
         color: var(--faint);
@@ -925,7 +932,8 @@
         }
 
         .hero-actions,
-        .doc-band .button {
+        .doc-band .button,
+        .doc-actions {
           width: 100%;
         }
 
@@ -1289,9 +1297,17 @@ python "$repo/skills/mobile-codex-dev/scripts/mobile_dev.py" doctor --root "$PWD
               helper commands, and examples that make away-from-laptop agent sessions visible and resumable.
             </p>
           </div>
-          <a class="button primary" href="https://github.com/SPDUK/MobileCodex" target="_blank" rel="noreferrer">
-            <i data-lucide="external-link"></i><span data-i18n="openRepository">Open Repository</span>
-          </a>
+          <div class="doc-actions">
+            <a class="button primary" href="https://github.com/SPDUK/MobileCodex" target="_blank" rel="noreferrer">
+              <i data-lucide="external-link"></i><span data-i18n="openRepository">Open Repository</span>
+            </a>
+            <a class="button" href="https://github.com/SPDUK/MobileCodex/tree/main/examples" target="_blank" rel="noreferrer">
+              <i data-lucide="file-text"></i><span>View Examples</span>
+            </a>
+            <a class="button" href="https://github.com/SPDUK/MobileCodex/issues/new/choose" target="_blank" rel="noreferrer">
+              <i data-lucide="message-square-plus"></i><span>Give Feedback</span>
+            </a>
+          </div>
         </div>
       </section>
     </main>

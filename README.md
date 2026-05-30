@@ -1,14 +1,68 @@
-# Mobile Codex Dev
+# MobileCodex
 
-**A first-class continuation skill for Codex Mobile.**
+[![GitHub stars](https://img.shields.io/github/stars/SPDUK/MobileCodex?style=social)](https://github.com/SPDUK/MobileCodex/stargazers)
+[![Codex Mobile](https://img.shields.io/badge/Codex-Mobile-111827)](https://chatgpt.com/codex/mobile/)
+[![LLM friendly](https://img.shields.io/badge/LLM-friendly_llms.txt-0b6bcb)](llms.txt)
+[![Python](https://img.shields.io/badge/Python-3.x-3776ab)](skills/mobile-codex-dev/scripts/mobile_dev.py)
 
-Mobile Codex Dev supports [Codex Mobile](https://chatgpt.com/codex/mobile/) by teaching Codex to keep the same desktop workspace moving while your phone is the control surface. It inspects the repo, runs the right commands, verifies the result, captures proof, and hands back the useful bits in a phone-readable format.
+**The support layer for [Codex Mobile](https://chatgpt.com/codex/mobile/): session snapshots, tracked previews, UX proof, proof bundles, and phone-readable handoffs.**
+
+MobileCodex helps Codex users keep real software work moving from a phone. It teaches Codex to inspect the repo, run the right commands, start and track local preview servers, capture screenshots and logs, bundle proof, and hand back the useful state in chat.
 
 No "check your terminal." No mystery localhost. No giant log dumps. Just the current state, the change, the preview, the proof, and the next useful move.
 
+## Try This From Codex Mobile
+
+Use this prompt from [Codex Mobile](https://chatgpt.com/codex/mobile/) when you want a session to become visible and resumable:
+
+```text
+Use $mobile-codex-dev, run doctor, snapshot this workspace, start the preview if safe, capture UX proof, bundle the proof, and give me a phone-readable handoff.
+```
+
+For a smaller first check:
+
+```text
+Use $mobile-codex-dev to show me the menu, run doctor, and tell me what is ready or blocked.
+```
+
+## Why Developers Use It
+
+- **Continue from a phone:** Codex Mobile becomes the control surface while the workspace stays on the development machine.
+- **See real state:** Snapshot branch, dirty files, candidate commands, ports, servers, recent proof, and next references.
+- **Trust previews:** Start tracked local servers, verify URLs, capture mobile screenshots, and expose ngrok only when safe.
+- **Keep proof:** Save screenshots, logs, changed files, command output, and server state into one reviewable bundle.
+- **Resume cleanly:** End every session with result, preview, proof, state, and next action.
+
+## Examples
+
+- [Frontend preview handoff](examples/frontend-preview-handoff.md)
+- [Bugfix from phone](examples/bugfix-from-phone.md)
+- [UX proof report](examples/ux-proof-report.md)
+- [Session snapshot](examples/session-snapshot.md)
+- [Proof bundle](examples/proof-bundle.md)
+
+## Guides
+
+- [Codex Mobile handoff workflow](docs/codex-mobile-handoff.md)
+- [Mobile preview workflow](docs/mobile-preview-workflow.md)
+- [Server registry](docs/server-registry.md)
+- [UX proof examples](docs/ux-proof-examples.md)
+- [Proof bundle examples](docs/proof-bundle-examples.md)
+
+## Looking For Feedback
+
+MobileCodex is especially useful to test with real Codex Mobile workflows. Feedback is welcome from:
+
+- people using Codex Mobile away from their laptop
+- developers who need local previews visible from a phone
+- skill authors building repeatable Codex workflows
+- teams that need proof artifacts and resumable handoffs
+
+Open an issue using the templates in this repo, or start a discussion with the prompt, project type, what worked, what failed, and what proof would have made the handoff easier to trust.
+
 ## Step 1: Use Codex From Anywhere
 
-Mobile Codex Dev is built as the practical partner workflow for [Work with Codex from anywhere](https://openai.com/index/work-with-codex-from-anywhere/) and [Codex Mobile](https://chatgpt.com/codex/mobile/). Codex Mobile gives you access to the live development environment from your phone; this skill makes that environment behave like a continuous, inspectable work session instead of a black box.
+MobileCodex is built as the practical partner workflow for [Work with Codex from anywhere](https://openai.com/index/work-with-codex-from-anywhere/) and [Codex Mobile](https://chatgpt.com/codex/mobile/). Codex Mobile gives you access to the live development environment from your phone; this skill makes that environment behave like a continuous, inspectable work session instead of a black box.
 
 Use it when your phone is the control surface and Codex needs to:
 
@@ -47,7 +101,7 @@ If something is missing, doctor reports the blocker in the same mobile handoff s
 
 ## Why It Feels Different
 
-Most coding workflows assume you can see the desktop, browser, terminal, and file tree. Mobile Codex Dev flips that assumption.
+Most coding workflows assume you can see the desktop, browser, terminal, and file tree. MobileCodex flips that assumption.
 
 Codex should do the local work itself, then bring the important evidence back to you:
 
@@ -139,35 +193,35 @@ py .\skills\mobile-codex-dev\scripts\mobile_dev.py menu
 
 The menu is designed for phone handoffs. It shows what to ask, what helper command Codex can run, and what proof or state comes back.
 
-| Ask for | What Codex should do | Helper command |
-| --- | --- | --- |
-| "Show me the current session state." | Summarize workspace, branch, changed files, ports, servers, recent proof, and suggested references. | `snapshot --root .` |
-| "Start the app preview and keep it visible." | Start a tracked local server with PID, port, URL, command, and log path. | `server-start --root . --name app --port <port> -- <cmd>` |
-| "What previews are still running?" | List MobileCodex-owned preview servers and status. | `server-list --root .` |
-| "Capture mobile proof for this page." | Save mobile and desktop screenshots, plus browser evidence when local Playwright is available. | `ux-proof --root . --url <local-url>` |
-| "Bundle the proof so I can review later." | Create one `proof.md` with snapshot state, artifacts, logs, changed files, and server state. | `proof-bundle --root .` |
-| "Check if this machine is ready." | Run readiness checks for runtimes, ngrok, proof tooling, registry health, proof storage, and skill drift. | `doctor --root .` |
-| "Give me a safe phone preview URL." | Start ngrok only after local verification and safety checks, then report the real forwarding URL. | `ngrok-preview --port <port>` |
-| "Summarize where we landed." | Produce a compact Result / Preview / Proof / State / Next handoff. | `handoff ...` |
+| Ask for                                      | What Codex should do                                                                                      | Helper command                                            |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| "Show me the current session state."         | Summarize workspace, branch, changed files, ports, servers, recent proof, and suggested references.       | `snapshot --root .`                                       |
+| "Start the app preview and keep it visible." | Start a tracked local server with PID, port, URL, command, and log path.                                  | `server-start --root . --name app --port <port> -- <cmd>` |
+| "What previews are still running?"           | List MobileCodex-owned preview servers and status.                                                        | `server-list --root .`                                    |
+| "Capture mobile proof for this page."        | Save mobile and desktop screenshots, plus browser evidence when local Playwright is available.            | `ux-proof --root . --url <local-url>`                     |
+| "Bundle the proof so I can review later."    | Create one `proof.md` with snapshot state, artifacts, logs, changed files, and server state.              | `proof-bundle --root .`                                   |
+| "Check if this machine is ready."            | Run readiness checks for runtimes, ngrok, proof tooling, registry health, proof storage, and skill drift. | `doctor --root .`                                         |
+| "Give me a safe phone preview URL."          | Start ngrok only after local verification and safety checks, then report the real forwarding URL.         | `ngrok-preview --port <port>`                             |
+| "Summarize where we landed."                 | Produce a compact Result / Preview / Proof / State / Next handoff.                                        | `handoff ...`                                             |
 
 ## What It Covers
 
-| Workflow | What Codex is guided to do |
-| --- | --- |
-| Frontend apps | Start or reuse the dev server, verify in browser, capture mobile screenshots, summarize console/network issues, and keep preview servers running when useful. |
-| Backend APIs | Run tests or a local service, exercise representative endpoints, report status codes and key responses. |
-| CLIs and scripts | Run safe sample commands, include exit codes, summarize decisive stdout/stderr, report generated files. |
-| Rust, Go, Python, Node | Prefer local project scripts and standard verification commands for each stack. |
-| Session snapshots | Summarize workspace, branch, dirty files, detected stack, ports, registered servers, and recent proof artifacts. |
-| Server registry | Track Codex-started preview servers with PID, port, URL, command, and log path outside git. |
-| Proof bundles | Gather snapshot state, artifacts, server status, changed files, and log tails into one `proof.md`. |
-| Mobile UX proof | Capture mobile and desktop screenshots with Playwright tooling, plus browser metadata when available. |
-| Mobile handoffs | Keep progress updates and final replies concise, evidence-backed, resumable, and useful from a phone. |
-| Public previews | Use `ngrok http <port>` only, after local verification and safety checks, with helper-based URL extraction. |
+| Workflow               | What Codex is guided to do                                                                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend apps          | Start or reuse the dev server, verify in browser, capture mobile screenshots, summarize console/network issues, and keep preview servers running when useful. |
+| Backend APIs           | Run tests or a local service, exercise representative endpoints, report status codes and key responses.                                                       |
+| CLIs and scripts       | Run safe sample commands, include exit codes, summarize decisive stdout/stderr, report generated files.                                                       |
+| Rust, Go, Python, Node | Prefer local project scripts and standard verification commands for each stack.                                                                               |
+| Session snapshots      | Summarize workspace, branch, dirty files, detected stack, ports, registered servers, and recent proof artifacts.                                              |
+| Server registry        | Track Codex-started preview servers with PID, port, URL, command, and log path outside git.                                                                   |
+| Proof bundles          | Gather snapshot state, artifacts, server status, changed files, and log tails into one `proof.md`.                                                            |
+| Mobile UX proof        | Capture mobile and desktop screenshots with Playwright tooling, plus browser metadata when available.                                                         |
+| Mobile handoffs        | Keep progress updates and final replies concise, evidence-backed, resumable, and useful from a phone.                                                         |
+| Public previews        | Use `ngrok http <port>` only, after local verification and safety checks, with helper-based URL extraction.                                                   |
 
 ## Public Preview Policy
 
-Mobile Codex Dev intentionally uses one tunnel provider: `ngrok`.
+MobileCodex intentionally uses one tunnel provider: `ngrok`.
 
 That keeps preview behavior predictable. It also prevents Codex from reaching for random tunnel services, deployment shortcuts, router changes, or editor-specific port forwarding.
 
@@ -304,4 +358,4 @@ This skill is intentionally lean:
 
 ## License
 
-No license has been selected yet. Add one before publishing or redistributing this project.
+MIT License. See [LICENSE](LICENSE).
