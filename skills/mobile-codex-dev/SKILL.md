@@ -11,12 +11,13 @@ Engineer as if the user cannot inspect or operate their laptop. Assume Codex mus
 
 1. Treat short mobile prompts as enough to begin when the risk is low.
 2. Inspect the repository and classify the work before asking questions.
-3. Run `scripts/mobile_dev.py detect --root <workspace> --format markdown` when project shape is unclear.
-4. Choose the relevant reference file below and follow it.
-5. Run the relevant local commands yourself when safe, including installs, tests, builds, scripts, and dev servers.
-6. For browser work, start or reuse the local server, open the target with available browser tooling, capture mobile proof, and keep the server running when the user needs a live preview.
-7. Bring important local evidence back into chat: URLs, screenshots, command output, exit codes, generated paths, and errors.
-8. For visual work, use Chrome DevTools or the in-app browser when available to open the target, capture screenshots, and inspect console/network status.
+3. For first-time setup, preview failures, or missing-tool suspicion, run `scripts/mobile_dev.py doctor --root <workspace> --format markdown` and report the action_required items.
+4. Run `scripts/mobile_dev.py detect --root <workspace> --format markdown` when project shape is unclear.
+5. Choose the relevant reference file below and follow it.
+6. Run the relevant local commands yourself when safe, including installs, tests, builds, scripts, and dev servers.
+7. For browser work, start or reuse the local server, open the target with available browser tooling, capture mobile proof, and keep the server running when the user needs a live preview.
+8. Bring important local evidence back into chat: URLs, screenshots, command output, exit codes, generated paths, and errors.
+9. For visual work, use Chrome DevTools or the in-app browser when available to open the target, capture screenshots, and inspect console/network status.
 
 ## Reference Map
 
@@ -31,6 +32,7 @@ Engineer as if the user cannot inspect or operate their laptop. Assume Codex mus
 Use `scripts/mobile_dev.py` for repeatable mobile-dev support:
 
 ```bash
+python scripts/mobile_dev.py doctor --root . --format markdown
 python scripts/mobile_dev.py detect --root . --format markdown
 python scripts/mobile_dev.py ngrok-check
 python scripts/mobile_dev.py ngrok-preview --port 5173
@@ -43,6 +45,7 @@ The script is advisory. It does not replace reading the codebase or running the 
 
 - Do not tell the user to check the local terminal, browser, file explorer, or desktop without also summarizing the relevant output.
 - Do not ask the user to run commands, start servers, open files, refresh browsers, inspect logs, or verify UI when Codex can safely do it locally.
+- Run doctor before first-time public preview setup or when tool availability is unclear; if it reports action_required, give the user the exact setup step rather than a vague dependency complaint.
 - Do not use Cloudflare Tunnel, localtunnel, router setup, VS Code ports, or other tunnel fallbacks. Use `ngrok http <port>` only for public phone previews.
 - For public phone previews, prefer `scripts/mobile_dev.py ngrok-preview --port <port>` so the real forwarding URL is extracted from the local ngrok API and failures are reported consistently.
 - If ngrok is missing, unauthenticated, or fails, report the exact failed command, key error lines, process/log status, and the smallest setup action.

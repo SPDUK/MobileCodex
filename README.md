@@ -19,6 +19,25 @@ Use it when your phone is the control surface and Codex needs to:
 - capture browser proof and screenshots
 - return a compact mobile handoff
 
+## Preflight: Run Doctor
+
+Before relying on phone previews, run the setup doctor once on the machine Codex controls:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py doctor --root .
+```
+
+Doctor checks the practical setup pieces that make away-from-laptop work dependable:
+
+- Python, Node/npm, and git availability
+- `ngrok` installation and local authtoken configuration
+- Playwright/browser proof tooling
+- common preview ports
+- required skill files and Codex skill validation when the local validator exists
+- README install path and first-time setup copy
+
+If something is missing, doctor reports the blocker in the same mobile handoff style Codex should use later. For example, if `ngrok` is not installed, it explains that you need an ngrok account, the local ngrok agent, and `ngrok config add-authtoken <token>` before public phone previews can work.
+
 ## Why It Feels Different
 
 Most coding workflows assume you can see the desktop, browser, terminal, and file tree. Mobile Codex Dev flips that assumption.
@@ -142,6 +161,12 @@ The root `index.html` is a single-file demo page for the skill. The skill itself
 ## Helper CLI
 
 The bundled helper is intentionally small. It gives Codex quick, repeatable checks without replacing normal engineering judgment.
+
+Run first-time setup checks:
+
+```powershell
+py .\skills\mobile-codex-dev\scripts\mobile_dev.py doctor --root .
+```
 
 Detect project shape:
 

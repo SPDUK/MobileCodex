@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="MobileCodex is a partner Codex skill for Work with Codex from anywhere, with mobile-first handoffs, server previews, ngrok URL extraction, logs, screenshots, and proof."
+      content="MobileCodex is a partner Codex skill for Work with Codex from anywhere, with setup doctor checks, mobile-first handoffs, server previews, ngrok URL extraction, logs, screenshots, and proof."
     />
     <title>MobileCodex Developer Skill</title>
+    <link rel="icon" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="14" fill="%230b1020"/%3E%3Cpath d="M18 38h28M18 26h18" stroke="%232ee59d" stroke-width="6" stroke-linecap="round"/%3E%3C/svg%3E' />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="preconnect" href="https://unpkg.com" />
     <link
@@ -464,7 +465,7 @@
 
       .feature-grid {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 14px;
       }
 
@@ -924,10 +925,15 @@
         <div class="section-heading">
           <h2 id="features-title">Built for Codex from anywhere</h2>
           <p>
-            Codex mobile gives you the remote control. MobileCodex adds the proof discipline.
+            Codex mobile gives you the remote control. MobileCodex adds setup checks, preview handling, and proof discipline.
           </p>
         </div>
         <div class="feature-grid">
+          <article class="feature">
+            <i data-lucide="stethoscope" aria-hidden="true"></i>
+            <h3>Setup doctor</h3>
+            <p>Codex checks Python, Node, git, ngrok auth, browser proof tooling, ports, skill files, and README setup.</p>
+          </article>
           <article class="feature">
             <i data-lucide="scan-search" aria-hidden="true"></i>
             <h3>Repo inspection first</h3>
@@ -982,6 +988,13 @@
             <article class="step">
               <span class="step-number">3</span>
               <div>
+                <h3>Run doctor</h3>
+                <p>Check ngrok account setup, auth token, browser proof tooling, ports, skill files, and install copy before you need them.</p>
+              </div>
+            </article>
+            <article class="step">
+              <span class="step-number">4</span>
+              <div>
                 <h3>Ask for proof</h3>
                 <p>Use it for server previews, ngrok URL extraction, screenshots, logs, blockers, and compact handoffs.</p>
               </div>
@@ -1007,7 +1020,8 @@
             <pre><code class="language-bash" id="installCommand">repo="$(mktemp -d)/MobileCodex"
 git clone https://github.com/SPDUK/MobileCodex "$repo"
 mkdir -p "$HOME/.agents/skills"
-cp -R "$repo/skills/mobile-codex-dev" "$HOME/.agents/skills/"</code></pre>
+cp -R "$repo/skills/mobile-codex-dev" "$HOME/.agents/skills/"
+python "$repo/skills/mobile-codex-dev/scripts/mobile_dev.py" doctor --root "$PWD"</code></pre>
             <div class="copy-row">
               <span>copy install command</span>
               <button class="copy" type="button" data-copy="#installCommand">
@@ -1131,7 +1145,8 @@ cp -R "$repo/skills/mobile-codex-dev" "$HOME/.agents/skills/"</code></pre>
           code: `repo="$(mktemp -d)/MobileCodex"
 git clone https://github.com/SPDUK/MobileCodex "$repo"
 mkdir -p "$HOME/.agents/skills"
-cp -R "$repo/skills/mobile-codex-dev" "$HOME/.agents/skills/"`,
+cp -R "$repo/skills/mobile-codex-dev" "$HOME/.agents/skills/"
+python "$repo/skills/mobile-codex-dev/scripts/mobile_dev.py" doctor --root "$PWD"`,
         },
         powershell: {
           label: "install.ps1",
@@ -1140,7 +1155,8 @@ cp -R "$repo/skills/mobile-codex-dev" "$HOME/.agents/skills/"`,
 if (Test-Path $repo) { Remove-Item $repo -Recurse -Force }
 git clone https://github.com/SPDUK/MobileCodex $repo
 New-Item -ItemType Directory -Force "$env:USERPROFILE\\.agents\\skills" | Out-Null
-Copy-Item -Path "$repo\\skills\\mobile-codex-dev" -Destination "$env:USERPROFILE\\.agents\\skills" -Recurse -Force`,
+Copy-Item -Path "$repo\\skills\\mobile-codex-dev" -Destination "$env:USERPROFILE\\.agents\\skills" -Recurse -Force
+py "$repo\\skills\\mobile-codex-dev\\scripts\\mobile_dev.py" doctor --root "$PWD"`,
         },
       };
 

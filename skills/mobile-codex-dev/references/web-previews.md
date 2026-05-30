@@ -8,10 +8,11 @@ Use this when a project has a browser UI, static page, local dev server, Storybo
 2. Install dependencies if the project clearly needs them and the install is local, safe, and expected for the stack.
 3. Start or reuse the local server. Capture command, port, PID or process note, and the first useful ready/error lines.
 4. Verify locally before exposing it. Use Codex browser/proof tooling when available.
-5. Start the tunnel with `scripts/mobile_dev.py ngrok-preview --port <port>` when the user needs phone access and the safety gate passes. Do this only after the local server responds.
-6. Use the extracted `https://...` forwarding URL from the helper output. Never invent a URL or copy a stale URL.
-7. Capture at least one mobile-sized screenshot when visual output matters.
-8. Finish with the mobile handoff from `mobile-handoff.md`.
+5. If this is the first public preview attempt or tooling looks incomplete, run `scripts/mobile_dev.py doctor --root <workspace>` before tunneling.
+6. Start the tunnel with `scripts/mobile_dev.py ngrok-preview --port <port>` when the user needs phone access and the safety gate passes. Do this only after the local server responds.
+7. Use the extracted `https://...` forwarding URL from the helper output. Never invent a URL or copy a stale URL.
+8. Capture at least one mobile-sized screenshot when visual output matters.
+9. Finish with the mobile handoff from `mobile-handoff.md`.
 
 ## Ngrok Only Policy
 
@@ -35,7 +36,7 @@ If ngrok is not installed, not authenticated, rate limited, or fails:
 ```text
 Preview: blocked because ngrok is not available.
 Proof: `ngrok http <port>` failed with: <key error>.
-Next: ngrok must be installed and authenticated on this machine before a public phone preview can be created.
+Next: create/sign into an ngrok account, install the ngrok agent, then run `ngrok config add-authtoken <token>` from the ngrok dashboard before a public phone preview can be created.
 ```
 
 Still provide local proof when available: server logs, local URL, screenshots from localhost, or test output.
